@@ -1,16 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://8gonw30c0yjk"]
+[gd_scene load_steps=5 format=3 uid="uid://8gonw30c0yjk"]
 
 [ext_resource type="Theme" uid="uid://bqdn1hl5c7fvl" path="res://Assets/SpaceWormTheme/space-worm-theme/space_worm_theme.tres" id="1_hva06"]
+[ext_resource type="Script" uid="uid://qkg812nx3ju2" path="res://Frontend/Terminal.gd" id="2_g11hk"]
 [ext_resource type="Script" uid="uid://cifwqt4w4qew8" path="res://Frontend/CommandLine.gd" id="2_tmlho"]
+[ext_resource type="Script" uid="uid://c00ko2v0q260v" path="res://Frontend/OutputTerminal.gd" id="3_y1h60"]
 
 [node name="MainTerminalControl" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -1.0
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_hva06")
+script = ExtResource("2_g11hk")
 
 [node name="Panel" type="Panel" parent="."]
 z_index = -10
@@ -39,19 +44,23 @@ layout_mode = 2
 [node name="HUD" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HUD"]
+[node name="HudTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HUD"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "this is some text for a thing"
 fit_content = true
 
-[node name="Output" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+[node name="TerminalOutputTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+script = ExtResource("3_y1h60")
 
 [node name="UserInput" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/UserInput"]
+[node name="UserInputTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/UserInput"]
+unique_name_in_owner = true
 layout_mode = 2
 fit_content = true
 script = ExtResource("2_tmlho")

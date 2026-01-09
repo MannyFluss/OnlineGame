@@ -1,9 +1,14 @@
 extends RichTextLabel
 
 func _ready() -> void:
-	GlobalInput.keycode_inputed.connect(_on_keycode_inputed)
+	GlobalInput.command_edited.connect(_on_command_edited)
+	GlobalInput.command_entered.connect(_on_command_entered)
 	
-
-func _on_keycode_inputed(event:InputEventKey)->void:
-	if event.pressed:
-		self.text += event.as_text_keycode().to_lower()
+	
+	
+func _on_command_edited(command:String)->void:
+	self.text=command
+	
+	
+func _on_command_entered(_command:String)->void:
+	self.text=""
