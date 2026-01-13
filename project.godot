@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 GlobalInput="*res://Core/Input.gd"
+Music="*res://Core/Music.gd"
+CommandInterface="*res://Core/CommandInterface.gd"
 
 [rendering]
 
