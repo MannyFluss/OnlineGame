@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="FileEntry" load_steps=2 format=3 uid="uid://dsrumrpmal1o1"]
+
+[ext_resource type="Script" uid="uid://dre5ywfpsyyok" path="res://Core/File/FileSubclasses/EntryFile.gd" id="1_c2q24"]
+
+[resource]
+script = ExtResource("1_c2q24")
+my_text_entry = "this is my test entry file"
+metadata/_custom_type_script = "uid://dre5ywfpsyyok"
