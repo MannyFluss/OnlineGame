@@ -18,6 +18,7 @@ func _input(event: InputEvent) -> void:
 		print(event.as_text_keycode())
 		if event.is_released():
 			return
+		
 		if event.as_text_keycode().length() == 1 or (event.as_text_keycode().begins_with("Shift+") 
 		and event.as_text_keycode().length()==7):
 			var individual_key="a"
@@ -32,6 +33,10 @@ func _input(event: InputEvent) -> void:
 			shifting=true
 		if event.keycode==Key.KEY_SPACE:
 			_current_command = _current_command+" "
+			command_edited.emit(_current_command)
+			return
+		if event.keycode==Key.KEY_PERIOD:
+			_current_command = _current_command+"."
 			command_edited.emit(_current_command)
 			return
 		if event.keycode==Key.KEY_BACKSPACE:

@@ -1,11 +1,19 @@
 extends Node
+class_name FolderMetaData
 
+var folder_properties: Dictionary = {}
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
 	pass
+
+func get_folder_info(folder_path: String) -> Dictionary:
+	if folder_properties.has(folder_path):
+		return folder_properties[folder_path]
+	return {
+		"name": folder_path.get_file(),
+		"path": folder_path,
+		"description": ""
+	}
+
+func set_folder_info(folder_path: String, info: Dictionary) -> void:
+	folder_properties[folder_path] = info

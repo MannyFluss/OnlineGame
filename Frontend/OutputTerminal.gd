@@ -2,10 +2,12 @@ extends RichTextLabel
 
 
 func _ready() -> void:
-	GlobalInput.command_entered.connect(_on_command_inputed)
-	pass
+	GlobalOutput.text_outputted.connect(_on_text_outputted)
+	GlobalOutput.clear_outputted.connect(_on_clear_outputted)
 	
-func _on_command_inputed(command: String)->void:
+func _on_text_outputted(command: String)->void:
 	print(command)
 	self.text = self.text + "\n"+command
-	
+
+func _on_clear_outputted()->void:
+	self.text=""

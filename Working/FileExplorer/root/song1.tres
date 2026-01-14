@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="FileSong" load_steps=2 format=3 uid="uid://b065cwuir2kbr"]
+
+[ext_resource type="Script" uid="uid://brk4jcvx8d6f4" path="res://Core/File/FileSubclasses/SongFile.gd" id="1_rnst4"]
+
+[resource]
+script = ExtResource("1_rnst4")
+song_name = "song3.mp3"

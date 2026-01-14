@@ -20,6 +20,8 @@ config/icon="res://icon.svg"
 GlobalInput="*res://Core/Input.gd"
 Music="*res://Core/Music.gd"
 CommandInterface="*res://Core/CommandInterface.gd"
+FileExporler="*res://Core/File/FileExporler.gd"
+GlobalOutput="*res://Core/Output.gd"
 
 [rendering]
 
