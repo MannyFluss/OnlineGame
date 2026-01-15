@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://8gonw30c0yjk"]
 
-[ext_resource type="Theme" uid="uid://bqdn1hl5c7fvl" path="res://Assets/SpaceWormTheme/space-worm-theme/space_worm_theme.tres" id="1_hva06"]
+[ext_resource type="Theme" uid="uid://dypw6l0674rui" path="res://Assets/SpaceWormTheme/space-worm-theme/MannyWorm.tres" id="1_y1h60"]
 [ext_resource type="Script" uid="uid://qkg812nx3ju2" path="res://Frontend/Terminal.gd" id="2_g11hk"]
 [ext_resource type="Script" uid="uid://cifwqt4w4qew8" path="res://Frontend/CommandLine.gd" id="2_tmlho"]
 [ext_resource type="Script" uid="uid://c00ko2v0q260v" path="res://Frontend/OutputTerminal.gd" id="3_y1h60"]
@@ -14,7 +14,7 @@ offset_top = -1.0
 offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_hva06")
+theme = ExtResource("1_y1h60")
 script = ExtResource("2_g11hk")
 
 [node name="Panel" type="Panel" parent="."]
@@ -46,21 +46,54 @@ layout_mode = 2
 
 [node name="HudTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HUD"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 text = "this is some text for a thing"
 fit_content = true
 
+[node name="Divider2" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/Divider2"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
 [node name="TerminalOutputTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 3
+bbcode_enabled = true
+text = "
+
+
+
+
+
+
+
+
+
+
+"
+scroll_active = false
+scroll_following = true
+scroll_following_visible_characters = true
 script = ExtResource("3_y1h60")
+
+[node name="Divider" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="MarginContainer/VBoxContainer/Divider"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
 
 [node name="UserInput" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="UserInputTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/UserInput"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 fit_content = true
 script = ExtResource("2_tmlho")
