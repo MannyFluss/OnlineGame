@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://8gonw30c0yjk"]
+[gd_scene load_steps=7 format=3 uid="uid://8gonw30c0yjk"]
 
 [ext_resource type="Theme" uid="uid://dypw6l0674rui" path="res://Assets/SpaceWormTheme/space-worm-theme/MannyWorm.tres" id="1_y1h60"]
 [ext_resource type="Script" uid="uid://qkg812nx3ju2" path="res://Frontend/Terminal.gd" id="2_g11hk"]
 [ext_resource type="Script" uid="uid://cifwqt4w4qew8" path="res://Frontend/CommandLine.gd" id="2_tmlho"]
 [ext_resource type="Script" uid="uid://c00ko2v0q260v" path="res://Frontend/OutputTerminal.gd" id="3_y1h60"]
+[ext_resource type="Script" uid="uid://8fop8a50hvbi" path="res://Core/Applications/ApplicationLoader.gd" id="5_blmqe"]
+[ext_resource type="Script" uid="uid://l86o0qom0ftv" path="res://Core/Applications/Apps/BasicVisualApp.gd" id="5_migre"]
 
 [node name="MainTerminalControl" type="Control"]
 layout_mode = 3
@@ -64,21 +66,8 @@ custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "
-
-
-
-
-
-
-
-
-
-
-"
 scroll_active = false
 scroll_following = true
-scroll_following_visible_characters = true
 script = ExtResource("3_y1h60")
 
 [node name="Divider" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
@@ -97,3 +86,21 @@ custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 fit_content = true
 script = ExtResource("2_tmlho")
+
+[node name="Notes" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 2649.0
+offset_top = -1293.0
+offset_right = 6794.0
+offset_bottom = -933.0
+theme_override_font_sizes/normal_font_size = 78
+text = "notes:
+resolution is: 96x20:
+000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+"
+
+[node name="ApplicationLoader" type="Node" parent="."]
+script = ExtResource("5_blmqe")
+
+[node name="BasicVisualApp" type="Node" parent="ApplicationLoader"]
+script = ExtResource("5_migre")

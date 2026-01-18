@@ -2,6 +2,7 @@ extends Node
 
 var test:int = 2
 
+var enabled = true
 
 signal command_entered(String)
 
@@ -14,8 +15,9 @@ var shifting = false
 
 #replace this entire piece of shit with a text edit
 func _input(event: InputEvent) -> void:
+	if !enabled:
+		return
 	if event is InputEventKey:
-		print(event.as_text_keycode())
 		if event.is_released():
 			return
 		

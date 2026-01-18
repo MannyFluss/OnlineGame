@@ -1,5 +1,13 @@
 extends Node
 
+enum States {
+	TERMINAL,
+	APPLICATION
+}
+
+
+var state :States=States.TERMINAL
+
 class Command:
 	var command:String=""
 	var subcommand:PackedStringArray=[]
@@ -47,6 +55,8 @@ func execute_command(command: Command) -> void:
 			_handle_read_command(command)
 		"play":
 			_handle_play_command(command)
+		"basic":
+			_handle_application_start(ApplicationLoader.instance.load_basic_app(),[""])
 
 func _handle_ls_command() -> void:
 	var files: Array = FileExporler.get_files_in_directory()
@@ -117,3 +127,24 @@ func _handle_play_command(command: Command) -> void:
 	else:
 		Music.play_song(file_name)
 		GlobalOutput.send_to_output("Playing: " + file_name)
+###pause standard input, save the state of the terminal output,
+#await the app to send its close signal, back to normal.
+#if app is already open that is a problem prevent it from opening and throw an Error
+
+
+func _handle_application_start(app:Application,_stripped_commands: Array[String])->void:
+	if state==States.APPLICATION:
+		push_error("Application already active (aborting new application)")
+		return
+	GlobalInput.enabled=false		
+	state=States.APPLICATION
+	
+	app.start(_stripped_commands[0],_stripped_commands)
+	await app.AppShutDown
+	_handle_application_shutdown(app)
+
+func _handle_application_shutdown(app:Application)->void:
+	app.exit()
+	state = States.TERMINAL
+	GlobalInput.enabled=true
+	
