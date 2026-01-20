@@ -1,0 +1,81 @@
+[gd_scene load_steps=4 format=3 uid="uid://fl1b252ar2b0"]
+
+[ext_resource type="Script" uid="uid://b5mrvhegeuuqf" path="res://Core/Applications/Apps/TutorialApp/TutorialFrontend.gd" id="1_r2wu1"]
+[ext_resource type="Theme" uid="uid://dypw6l0674rui" path="res://Assets/SpaceWormTheme/space-worm-theme/MannyWorm.tres" id="1_t8jr7"]
+[ext_resource type="Script" uid="uid://8yao6rcwp1s2" path="res://Core/Applications/Apps/TutorialApp/TutorialDrawing.gd" id="2_oof4p"]
+
+[node name="TutorialFrontend" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_t8jr7")
+script = ExtResource("1_r2wu1")
+
+[node name="BackgroundColor" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Control" type="Control" parent="Control/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/VBoxContainer/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/VBoxContainer/Control/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TutorialDrawing" type="Node2D" parent="Control/VBoxContainer/Control/HBoxContainer/MarginContainer"]
+script = ExtResource("2_oof4p")
+current_face = "suprised"
+eye_offset_x_ratio = 0.65
+mouth_offset_y_ratio = 0.55
+line_width = 50.0
+
+[node name="MarginContainer2" type="MarginContainer" parent="Control/VBoxContainer/Control/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TutorialJohnsonOutput" type="RichTextLabel" parent="Control/VBoxContainer/Control/HBoxContainer/MarginContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PlayerText" type="RichTextLabel" parent="Control/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+text = ">option1 >option2 >option3"
+horizontal_alignment = 1
+vertical_alignment = 1
