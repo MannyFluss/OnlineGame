@@ -47,9 +47,9 @@ func _parse_command(command: String) -> Command:
 
 func execute_command(command: Command) -> void:
 	match (command.command):
-		"ls":
+		"observe":
 			_handle_ls_command()
-		"cd":
+		"explore":
 			_handle_cd_command(command)
 		"read":
 			_handle_read_command(command)
@@ -57,6 +57,8 @@ func execute_command(command: Command) -> void:
 			_handle_play_command(command)
 		"basic":
 			_handle_application_start(ApplicationLoader.instance.load_basic_app(),[""])
+		"basic2":
+			_handle_application_start(ApplicationLoader.instance.load_basic_app_sequel(),[""])
 
 func _handle_ls_command() -> void:
 	var files: Array = FileExporler.get_files_in_directory()

@@ -17,11 +17,8 @@ var debug_mode : bool = true && OS.is_debug_build()
 func _ready() -> void:
 
 	get_tree().root.call_deferred("add_child", _my_audio_player)
-
 	await get_tree().process_frame
 
-	# Example: play the first song
-	play_random()
 
 
 func _process(_delta: float) -> void:

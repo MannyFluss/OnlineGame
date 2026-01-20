@@ -8,3 +8,6 @@ func _ready() -> void:
 
 func load_basic_app()->Application:
 	return $BasicVisualApp
+	
+func load_basic_app_sequel()->Application:
+	return $BasicVisualApp2

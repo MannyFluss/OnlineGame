@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://8gonw30c0yjk"]
+[gd_scene load_steps=8 format=3 uid="uid://8gonw30c0yjk"]
 
 [ext_resource type="Theme" uid="uid://dypw6l0674rui" path="res://Assets/SpaceWormTheme/space-worm-theme/MannyWorm.tres" id="1_y1h60"]
 [ext_resource type="Script" uid="uid://qkg812nx3ju2" path="res://Frontend/Terminal.gd" id="2_g11hk"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://c00ko2v0q260v" path="res://Frontend/OutputTerminal.gd" id="3_y1h60"]
 [ext_resource type="Script" uid="uid://8fop8a50hvbi" path="res://Core/Applications/ApplicationLoader.gd" id="5_blmqe"]
 [ext_resource type="Script" uid="uid://l86o0qom0ftv" path="res://Core/Applications/Apps/BasicVisualApp.gd" id="5_migre"]
+[ext_resource type="Script" uid="uid://drl0p6krgt7i3" path="res://Core/Applications/Apps/BasicVisualApp2/BasicVisualApp2.gd" id="7_h6cu1"]
 
 [node name="MainTerminalControl" type="Control"]
 layout_mode = 3
@@ -104,3 +105,6 @@ script = ExtResource("5_blmqe")
 
 [node name="BasicVisualApp" type="Node" parent="ApplicationLoader"]
 script = ExtResource("5_migre")
+
+[node name="BasicVisualApp2" type="Node" parent="ApplicationLoader"]
+script = ExtResource("7_h6cu1")
