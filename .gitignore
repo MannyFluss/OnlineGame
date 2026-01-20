@@ -2,3 +2,4 @@
 .godot/
 /android/
 /gitignore/
+.DS_Store
