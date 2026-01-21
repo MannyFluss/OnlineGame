@@ -55,6 +55,8 @@ func execute_command(command: Command) -> void:
 			_handle_read_command(command)
 		"play":
 			_handle_play_command(command)
+		"file":
+			pass
 		"message":
 			_handle_message_command(command)
 		#make this automatic later cccc
