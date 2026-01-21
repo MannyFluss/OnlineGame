@@ -2,6 +2,7 @@ extends Node
 class_name DSLInterpreter
 
 signal command_emitted(command: String, args: Array)
+signal terminal_command(command_text: String)
 signal timeline_started()
 signal timeline_ended()
 signal waiting_for_input(input_name: String)
@@ -73,7 +74,6 @@ func _parse_instruction(line: String) -> Dictionary:
 			if args.size() < 1:
 				return {}
 			return {"type": "emit", "command": args[0], "args": args.slice(1)}
-
 		"wait_input":
 			if args.size() < 1:
 				return {}
@@ -91,6 +91,12 @@ func _parse_instruction(line: String) -> Dictionary:
 
 		"if":
 			return _parse_if(args)
+
+		"cmd":
+			# Everything after "cmd " is the terminal command
+			var cmd_start = line.find("cmd ") + 4
+			var cmd_text = line.substr(cmd_start).strip_edges()
+			return {"type": "cmd", "text": cmd_text}
 
 		_:
 			push_warning("DSLInterpreter: Unknown command: %s" % command)
@@ -202,6 +208,10 @@ func _execute_instruction(instruction: Dictionary) -> bool:
 	match instruction.type:
 		"emit":
 			command_emitted.emit(instruction.command, instruction.args)
+			return true
+
+		"cmd":
+			terminal_command.emit(instruction.text)
 			return true
 
 		"wait_input":

@@ -55,10 +55,13 @@ func execute_command(command: Command) -> void:
 			_handle_read_command(command)
 		"play":
 			_handle_play_command(command)
+		#make this automatic later cccc
 		"basic":
-			_handle_application_start(ApplicationLoader.instance.load_basic_app(),[""])
+			_handle_application_start(ApplicationLoader.instance.load_app("Basic"),[""])
 		"basic2":
-			_handle_application_start(ApplicationLoader.instance.load_basic_app_sequel(),[""])
+			_handle_application_start(ApplicationLoader.instance.load_app("Basic2"),[""])
+		"tutorial":
+			_handle_application_start(ApplicationLoader.instance.load_app("Tutorial"),[""])
 
 func _handle_ls_command() -> void:
 	var files: Array = FileExporler.get_files_in_directory()
