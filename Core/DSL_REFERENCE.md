@@ -15,7 +15,7 @@ Lines starting with `#` are ignored.
 
 ```
 # This is a comment
-emit set_face smile  # inline comments are NOT supported
+cmd message tutorial Hello  # inline comments are NOT supported
 ```
 
 ## Markers
@@ -35,23 +35,6 @@ Markers define named positions in the timeline that can be jumped to.
 - Multiple jumps can target the same marker
 
 ## Commands
-
-### emit
-
-Sends a command to the game. The interpreter doesn't know what these commands do - your game code handles them via the `command_emitted` signal.
-
-**Syntax:** `emit <command_name> [args...]`
-
-```
-emit set_face smile
-emit output_text "Hello, world!"
-emit play_sound ding
-emit set_state score 100
-```
-
-- First argument is the command name
-- Remaining arguments are passed as an array
-- Strings with spaces must be quoted: `"like this"`
 
 ### wait_input
 
@@ -152,7 +135,6 @@ The interpreter emits these signals:
 
 | Signal | Parameters | Description |
 |--------|------------|-------------|
-| `command_emitted` | `command: String, args: Array` | An `emit` instruction executed |
 | `terminal_command` | `command_text: String` | A `cmd` instruction executed |
 | `timeline_started` | none | `start()` was called |
 | `timeline_ended` | none | Reached end or `stop()` was called |
@@ -171,9 +153,9 @@ interpreter.load_file("res://path/to/timeline.dsl")
 # Or parse a string directly
 interpreter.parse("""
 :start
-emit hello
+cmd message app Hello
 wait_input space
-emit goodbye
+cmd message app Goodbye
 """)
 
 # Start execution
@@ -226,22 +208,18 @@ func _get_state_value(key: String):
     return GlobalState.get_value(key, null)
 ```
 
-### Handling Commands
+### Handling Terminal Commands
 
-Connect to the `command_emitted` signal:
+Connect to the `terminal_command` signal:
 
 ```gdscript
-interpreter.command_emitted.connect(_on_command)
+interpreter.terminal_command.connect(_on_terminal_command)
 
-func _on_command(command: String, args: Array) -> void:
-    match command:
-        "set_face":
-            drawing.current_face = args[0]
-        "output_text":
-            output_label.text = args[0]
-        "play_sound":
-            AudioManager.play(args[0])
+func _on_terminal_command(command_text: String) -> void:
+    CommandInterface.execute_text_command(command_text)
 ```
+
+Commands are sent through the global command interface using `cmd message <channel> <text>`. Frontends subscribe to specific channels via `GlobalOutput.text_outputted`.
 
 ## Complete Example
 
@@ -249,31 +227,32 @@ func _on_command(command: String, args: Array) -> void:
 # tutorial.dsl - A simple tutorial sequence
 
 :start
-emit set_face smile
-emit output_text "Welcome to the game!"
-wait_time 1.5
-
-emit output_text "Press SPACE to continue..."
+cmd message tutorial_face smile
+cmd message tutorial Welcome to the game!
+cmd message tutorial_player [Press SPACE to continue]
 wait_input space
 
-emit set_face neutral
-emit output_text "Let's check your progress."
+cmd message tutorial_face neutral
+cmd message tutorial Let's check your progress.
+cmd message tutorial_player
 if tutorial_complete == true -> already_done
 
 :show_tutorial
-emit output_text "This is how you play..."
+cmd message tutorial This is how you play...
+cmd message tutorial_player [Press SPACE to continue]
 wait_input space
-emit set_state tutorial_complete true
 jump end
 
 :already_done
-emit set_face smile
-emit output_text "You've already completed the tutorial!"
+cmd message tutorial_face smile
+cmd message tutorial You've already completed the tutorial!
+cmd message tutorial_player [Press SPACE to continue]
 wait_input space
 
 :end
-emit set_face neutral
-emit output_text "Good luck!"
+cmd message tutorial_face neutral
+cmd message tutorial Good luck!
+cmd message tutorial_player
 wait_time 2.0
 ```
 

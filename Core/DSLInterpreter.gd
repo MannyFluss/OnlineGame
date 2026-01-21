@@ -1,7 +1,6 @@
 extends Node
 class_name DSLInterpreter
 
-signal command_emitted(command: String, args: Array)
 signal terminal_command(command_text: String)
 signal timeline_started()
 signal timeline_ended()
@@ -70,10 +69,6 @@ func _parse_instruction(line: String) -> Dictionary:
 	var args = parts.slice(1)
 
 	match command:
-		"emit":
-			if args.size() < 1:
-				return {}
-			return {"type": "emit", "command": args[0], "args": args.slice(1)}
 		"wait_input":
 			if args.size() < 1:
 				return {}
@@ -206,10 +201,6 @@ func _execute_next() -> void:
 
 func _execute_instruction(instruction: Dictionary) -> bool:
 	match instruction.type:
-		"emit":
-			command_emitted.emit(instruction.command, instruction.args)
-			return true
-
 		"cmd":
 			terminal_command.emit(instruction.text)
 			return true

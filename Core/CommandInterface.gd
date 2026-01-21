@@ -55,6 +55,8 @@ func execute_command(command: Command) -> void:
 			_handle_read_command(command)
 		"play":
 			_handle_play_command(command)
+		"message":
+			_handle_message_command(command)
 		#make this automatic later cccc
 		"basic":
 			_handle_application_start(ApplicationLoader.instance.load_app("Basic"),[""])
@@ -62,6 +64,17 @@ func execute_command(command: Command) -> void:
 			_handle_application_start(ApplicationLoader.instance.load_app("Basic2"),[""])
 		"tutorial":
 			_handle_application_start(ApplicationLoader.instance.load_app("Tutorial"),[""])
+
+func _handle_message_command(command: Command) -> void:
+	if command.subcommand.size() < 3:
+		GlobalOutput.send_to_output("Usage: message [channel] [message]")
+		return
+
+	var channel: String = command.subcommand[1]
+	var message: String = command.raw_command.trim_prefix("message").strip_edges()
+	message = message.trim_prefix(channel).strip_edges()
+
+	GlobalOutput.send_to_output(message, channel)
 
 func _handle_ls_command() -> void:
 	var files: Array = FileExporler.get_files_in_directory()
