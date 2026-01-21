@@ -5,18 +5,36 @@
 # === FACE & DIALOG INTRO ===
 # [USER: Set character face and name display]
 cmd message tutorial_face smile
-cmd message tutorial_character "Tutorial Johnson, M.D."
+cmd message tutorial_character 
 
-# [USER: Fill in the actual greeting dialogue]
-cmd message tutorial "Hello prospective player! It has been 6000 years since you last logged in."
-cmd message tutorial_player [Press SPACE to continue]
+Name Tutorial Johnson, M.D.
+
+
+Likes: -Teaching -Knowledge    
+			-Good Listeners -Pondering   
+
+Dislikes: -People who dont take notes
+			 -People who dont pay attention
+
+. . . 
+
+cmd message tutorial <Hello prospective player!
+It has been [6000] years since last log in.>
+cmd message tutorial_player (press space to continue...)
 wait_input space
 
 # === CHARACTER TRAITS SETUP ===
 # [USER: Optionally display character information]
-cmd message tutorial "Before we start, let me tell you about myself."
-cmd message tutorial "I like: teaching, knowledge, good listeners, and pondering the abyss."
-cmd message tutorial "I dislike: bad listeners, people who don't take notes, and those who don't pay attention."
+cmd message tutorial <Before we start, let me tell you about myself.>
+cmd message tutorial <I like:
+-Teaching
+-Knowledge
+-Good Listeners
+-Pondering the abyss>
+cmd message tutorial <I dislike:
+-Bad listeners
+-People who don't take notes
+-Those who don't pay attention>
 cmd message tutorial_player [Press SPACE to continue]
 wait_input space
 

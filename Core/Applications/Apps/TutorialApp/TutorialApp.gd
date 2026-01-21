@@ -1,6 +1,7 @@
 extends Application
 
-const TIMELINE_PATH := "res://Core/Applications/Apps/TutorialApp/tutorial.dsl"
+
+const TIMELINE_PATH := "res://Core/Applications/Apps/TutorialApp/tutorial.txt"
 const FRONTEND_SCENE := preload("res://Core/Applications/Apps/TutorialApp/TutorialFrontend.tscn")
 
 var _interpreter: DSLInterpreter

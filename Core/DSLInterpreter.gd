@@ -34,28 +34,49 @@ func parse(content: String) -> bool:
 
 	var lines = content.split("\n")
 	var instruction_index = 0
+	var i = 0
 
-	for line in lines:
+	while i < lines.size():
+		var line = lines[i]
 		line = line.strip_edges()
 
 		# Skip empty lines and comments
 		if line.is_empty() or line.begins_with("#"):
+			i += 1
 			continue
 
 		# Marker definition
 		if line.begins_with(":"):
 			var marker_name = line.substr(1).strip_edges()
 			_markers[marker_name] = instruction_index
+			i += 1
 			continue
 
-		# Parse instruction
-		var instruction = _parse_instruction(line)
-		if instruction.is_empty():
-			push_warning("DSLInterpreter: Could not parse line: %s" % line)
-			continue
+		# Check if line contains < (start of multi-line content)
+		if line.contains("<"):
+			var full_instruction = line
+			# Accumulate lines until we find >
+			while i < lines.size() and not full_instruction.contains(">"):
+				i += 1
+				if i < lines.size():
+					full_instruction += "\n" + lines[i]
 
-		_instructions.append(instruction)
-		instruction_index += 1
+			var instruction = _parse_instruction(full_instruction)
+			if instruction.is_empty():
+				push_warning("DSLInterpreter: Could not parse instruction: %s" % full_instruction)
+			else:
+				_instructions.append(instruction)
+				instruction_index += 1
+		else:
+			# Parse instruction
+			var instruction = _parse_instruction(line)
+			if instruction.is_empty():
+				push_warning("DSLInterpreter: Could not parse line: %s" % line)
+			else:
+				_instructions.append(instruction)
+				instruction_index += 1
+
+		i += 1
 
 	return true
 
@@ -91,6 +112,13 @@ func _parse_instruction(line: String) -> Dictionary:
 			# Everything after "cmd " is the terminal command
 			var cmd_start = line.find("cmd ") + 4
 			var cmd_text = line.substr(cmd_start).strip_edges()
+
+			# Extract content between < and >
+			var angle_start = cmd_text.find("<")
+			var angle_end = cmd_text.rfind(">")
+			if angle_start != -1 and angle_end != -1 and angle_end > angle_start:
+				cmd_text = cmd_text.substr(angle_start + 1, angle_end - angle_start - 1)
+
 			return {"type": "cmd", "text": cmd_text}
 
 		_:
