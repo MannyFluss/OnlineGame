@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://bka8c2ojouf1e"
+path="res://.godot/imported/Temple Miniclips.ogg-37545e1b42c16c1c9312c06e9efa94ad.oggvorbisstr"
+
+[deps]
+
+source_file="res://Working/Music/External/Temple Miniclips.ogg"
+dest_files=["res://.godot/imported/Temple Miniclips.ogg-37545e1b42c16c1c9312c06e9efa94ad.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

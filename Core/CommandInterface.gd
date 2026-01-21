@@ -66,6 +66,10 @@ func execute_command(command: Command) -> void:
 			_handle_application_start(ApplicationLoader.instance.load_app("Basic2"),[""])
 		"tutorial":
 			_handle_application_start(ApplicationLoader.instance.load_app("Tutorial"),[""])
+		"sfx":
+			_handle_sfx_command(command)
+		"music":
+			_handle_music_command(command)
 
 func _handle_message_command(command: Command) -> void:
 	if command.subcommand.size() < 3:
@@ -151,6 +155,32 @@ func _handle_play_command(command: Command) -> void:
 #await the app to send its close signal, back to normal.
 #if app is already open that is a problem prevent it from opening and throw an Error
 
+
+func _handle_sfx_command(command: Command) -> void:
+	if command.subcommand.size() < 2:
+		GlobalOutput.send_to_output("Usage: sfx [filename]")
+		return
+
+	var sfx_name: String = command.subcommand[1]
+	SFX.play_sfx(sfx_name)
+	GlobalOutput.send_to_output("Playing SFX: " + sfx_name)
+
+func _handle_music_command(command: Command) -> void:
+	if command.subcommand.size() < 2:
+		GlobalOutput.send_to_output("Usage: music [filename|stop|random]")
+		return
+
+	var arg: String = command.subcommand[1]
+
+	if arg == "stop":
+		Music.stop()
+		GlobalOutput.send_to_output("Music stopped")
+	elif arg == "random":
+		Music.play_random()
+		GlobalOutput.send_to_output("Playing random song")
+	else:
+		Music.play_song(arg)
+		GlobalOutput.send_to_output("Playing music: " + arg)
 
 func _handle_application_start(app:Application,_stripped_commands: Array[String])->void:
 	if state==States.APPLICATION:

@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dbmlp55ke8su"
+path="res://.godot/imported/Beats D.ogg-b3a39f560b0169184a5d0aa250b6677f.oggvorbisstr"
+
+[deps]
+
+source_file="res://Working/Music/External/Beats D.ogg"
+dest_files=["res://.godot/imported/Beats D.ogg-b3a39f560b0169184a5d0aa250b6677f.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

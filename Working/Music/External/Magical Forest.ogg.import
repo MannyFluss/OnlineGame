@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://caynfr6t8ep3t"
+path="res://.godot/imported/Magical Forest.ogg-8da3be91b18d06c16de3fde1a9577b61.oggvorbisstr"
+
+[deps]
+
+source_file="res://Working/Music/External/Magical Forest.ogg"
+dest_files=["res://.godot/imported/Magical Forest.ogg-8da3be91b18d06c16de3fde1a9577b61.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

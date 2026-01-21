@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://o1atxc8o6j65"
+path="res://.godot/imported/Effects A.ogg-da95a3d5012618622cabeff3eb4c63e4.oggvorbisstr"
+
+[deps]
+
+source_file="res://Working/Music/External/Effects A.ogg"
+dest_files=["res://.godot/imported/Effects A.ogg-da95a3d5012618622cabeff3eb4c63e4.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

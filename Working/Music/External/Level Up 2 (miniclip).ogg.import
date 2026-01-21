@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dq6kmq2x1svi7"
+path="res://.godot/imported/Level Up 2 (miniclip).ogg-4dcfadb1f6d42e64ccd9f831d1ccd7a2.oggvorbisstr"
+
+[deps]
+
+source_file="res://Working/Music/External/Level Up 2 (miniclip).ogg"
+dest_files=["res://.godot/imported/Level Up 2 (miniclip).ogg-4dcfadb1f6d42e64ccd9f831d1ccd7a2.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

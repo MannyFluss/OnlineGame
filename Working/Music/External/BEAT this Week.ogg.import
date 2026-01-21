@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cyyea8y8acm0i"
+path="res://.godot/imported/BEAT this Week.ogg-7b0e36b0bc4ec1f58d3d3256541632cb.oggvorbisstr"
+
+[deps]
+
+source_file="res://Working/Music/External/BEAT this Week.ogg"
+dest_files=["res://.godot/imported/BEAT this Week.ogg-7b0e36b0bc4ec1f58d3d3256541632cb.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

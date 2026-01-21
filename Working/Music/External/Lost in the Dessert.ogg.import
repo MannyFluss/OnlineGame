@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cfcnjhj72qek0"
+path="res://.godot/imported/Lost in the Dessert.ogg-d31b3feddaaad79d16259a7e5216bb1b.oggvorbisstr"
+
+[deps]
+
+source_file="res://Working/Music/External/Lost in the Dessert.ogg"
+dest_files=["res://.godot/imported/Lost in the Dessert.ogg-d31b3feddaaad79d16259a7e5216bb1b.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

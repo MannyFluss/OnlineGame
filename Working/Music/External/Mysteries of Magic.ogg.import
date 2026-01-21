@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://176dasntyywh"
+path="res://.godot/imported/Mysteries of Magic.ogg-0344efeacdf062bb249061f35827f3aa.oggvorbisstr"
+
+[deps]
+
+source_file="res://Working/Music/External/Mysteries of Magic.ogg"
+dest_files=["res://.godot/imported/Mysteries of Magic.ogg-0344efeacdf062bb249061f35827f3aa.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

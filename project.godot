@@ -23,6 +23,7 @@ CommandInterface="*res://Core/CommandInterface.gd"
 FileExporler="*res://Core/File/FileExporler.gd"
 GlobalOutput="*res://Core/Output.gd"
 GlobalStateManager="*res://Core/GlobalStateManager.gd"
+SFX="*res://Core/SFX.gd"
 
 [display]
 

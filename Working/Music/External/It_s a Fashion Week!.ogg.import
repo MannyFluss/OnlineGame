@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://c6oyure1aw08i"
+path="res://.godot/imported/It_s a Fashion Week!.ogg-de19a2053859db4d8b638e64412e6c58.oggvorbisstr"
+
+[deps]
+
+source_file="res://Working/Music/External/It_s a Fashion Week!.ogg"
+dest_files=["res://.godot/imported/It_s a Fashion Week!.ogg-de19a2053859db4d8b638e64412e6c58.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

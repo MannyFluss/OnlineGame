@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://d12b365f24lu8"
+path="res://.godot/imported/Dead Planet.ogg-f01cd23e599d094d7ebb453a8aab7580.oggvorbisstr"
+
+[deps]
+
+source_file="res://Working/Music/External/Dead Planet.ogg"
+dest_files=["res://.godot/imported/Dead Planet.ogg-f01cd23e599d094d7ebb453a8aab7580.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

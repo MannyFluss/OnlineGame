@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://b0mhx8f3sduhs"
+path="res://.godot/imported/Light Music.ogg-7093636107601c6f88bc6d2fb7ada59a.oggvorbisstr"
+
+[deps]
+
+source_file="res://Working/Music/External/Light Music.ogg"
+dest_files=["res://.godot/imported/Light Music.ogg-7093636107601c6f88bc6d2fb7ada59a.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
