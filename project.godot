@@ -22,12 +22,23 @@ Music="*res://Core/Music.gd"
 CommandInterface="*res://Core/CommandInterface.gd"
 FileExporler="*res://Core/File/FileExporler.gd"
 GlobalOutput="*res://Core/Output.gd"
+GlobalStateManager="*res://Core/GlobalStateManager.gd"
 
 [display]
 
 window/size/viewport_width=4096
 window/size/viewport_height=2160
 window/stretch/mode="canvas_items"
+
+[file_customization]
+
+folder_colors={
+"res://Assets/": "orange",
+"res://Core/": "purple",
+"res://Core/Applications/": "green",
+"res://Frontend/": "green",
+"res://Working/": "red"
+}
 
 [rendering]
 
