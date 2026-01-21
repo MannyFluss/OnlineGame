@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://4qcp0ghwli0g"
+path="res://.godot/imported/Empty Void Suction Riser_02.wav-8e6b264b0c68f3a9cbc1fecbc0035db0.sample"
+
+[deps]
+
+source_file="res://Working/SFX/External/Shapeforms Audio Free Sound Effects/Sci Fi Warp Speed Preview/Empty Void Suction Riser_02.wav"
+dest_files=["res://.godot/imported/Empty Void Suction Riser_02.wav-8e6b264b0c68f3a9cbc1fecbc0035db0.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

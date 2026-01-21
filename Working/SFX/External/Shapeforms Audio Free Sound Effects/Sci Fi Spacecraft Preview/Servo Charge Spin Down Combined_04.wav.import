@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://c88xd0bcvektn"
+path="res://.godot/imported/Servo Charge Spin Down Combined_04.wav-9ff39aee696a667ed2395efae8ce51b9.sample"
+
+[deps]
+
+source_file="res://Working/SFX/External/Shapeforms Audio Free Sound Effects/Sci Fi Spacecraft Preview/Servo Charge Spin Down Combined_04.wav"
+dest_files=["res://.godot/imported/Servo Charge Spin Down Combined_04.wav-9ff39aee696a667ed2395efae8ce51b9.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

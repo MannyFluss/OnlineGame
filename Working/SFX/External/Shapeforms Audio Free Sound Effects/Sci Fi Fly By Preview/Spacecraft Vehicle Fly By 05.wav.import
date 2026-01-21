@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://22un3hgkif4p"
+path="res://.godot/imported/Spacecraft Vehicle Fly By 05.wav-ada42d15a1d64e06c7459a30619fbfab.sample"
+
+[deps]
+
+source_file="res://Working/SFX/External/Shapeforms Audio Free Sound Effects/Sci Fi Fly By Preview/Spacecraft Vehicle Fly By 05.wav"
+dest_files=["res://.godot/imported/Spacecraft Vehicle Fly By 05.wav-ada42d15a1d64e06c7459a30619fbfab.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

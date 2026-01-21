@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dwsfankf55qpd"
+path="res://.godot/imported/Blade Slash Short 01.wav-fcac405c5e704594e5065c0c64e53c4b.sample"
+
+[deps]
+
+source_file="res://Working/SFX/External/Shapeforms Audio Free Sound Effects/Hack and Slash Melee Combat Preview/Blade Slash Short 01.wav"
+dest_files=["res://.godot/imported/Blade Slash Short 01.wav-fcac405c5e704594e5065c0c64e53c4b.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2
