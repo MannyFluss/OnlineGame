@@ -1,7 +1,8 @@
 extends Application
 
 
-const TIMELINE_PATH := "res://Core/Applications/Apps/TutorialApp/tutorial.txt"
+const TIMELINE_PATH := "res://Core/Applications/Apps/TutorialApp/test_state_functions.txt"
+
 const FRONTEND_SCENE := preload("res://Core/Applications/Apps/TutorialApp/TutorialFrontend.tscn")
 
 var _interpreter: DSLInterpreter
@@ -9,6 +10,12 @@ var _frontend: Control
 
 
 func start(_command: String, _stripped_commands: Array[String]) -> void:
+	GlobalStateManager.runtime_state["tutorial"] = {}
+	GlobalStateManager.runtime_state["tutorial"]["current_choice"] = 1
+	GlobalStateManager.runtime_state["tutorial"]["current_choice_active"] = false
+	
+	
+	
 	active = true
 	print("[TutorialApp] Starting...")
 
@@ -55,7 +62,7 @@ func exit() -> void:
 
 
 func _on_terminal_command(command_text: String) -> void:
-	CommandInterface.execute_text_command(command_text)
+	CommandInterface.execute_text_command(command_text) 
 
 
 func _on_timeline_ended() -> void:

@@ -13,6 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_t8jr7")
 script = ExtResource("1_r2wu1")
+metadata/_edit_horizontal_guides_ = [2385.0]
 
 [node name="BackgroundColor" type="ColorRect" parent="."]
 layout_mode = 1
@@ -59,6 +60,7 @@ size_flags_horizontal = 3
 
 [node name="TutorialDrawing" type="Node2D" parent="Control/VBoxContainer/Control/HBoxContainer/MarginContainer"]
 script = ExtResource("2_oof4p")
+current_face = "angry"
 eye_offset_x_ratio = 0.65
 mouth_offset_y_ratio = 0.55
 line_width = 50.0
@@ -70,7 +72,6 @@ size_flags_horizontal = 3
 [node name="TutorialJohnsonOutput" type="RichTextLabel" parent="Control/VBoxContainer/Control/HBoxContainer/MarginContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PlayerText" type="RichTextLabel" parent="Control/VBoxContainer"]

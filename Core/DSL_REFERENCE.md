@@ -40,17 +40,21 @@ Markers define named positions in the timeline that can be jumped to.
 
 Pauses execution until a specific input is received.
 
-**Syntax:** `wait_input <input_name>`
+**Syntax:** `wait_input <input_name>` or `wait_input <input_name> -> <marker_name>`
 
 ```
 wait_input space
 wait_input confirm
 wait_input any
+wait_input space -> next_section
+wait_input any -> continue
 ```
 
 - `any` is a special value that accepts any input
 - Input names are arbitrary strings - your game code calls `receive_input("space")` to resume
 - The `waiting_for_input` signal is emitted when waiting begins
+- Optional `-> marker_name` jumps to the marker when the input is received
+- Without a marker, execution continues to the next line after input
 
 ### wait_time
 
@@ -82,6 +86,18 @@ cmd set_volume 0.5
 - Emits the `terminal_command` signal with the full command string
 - Your game code handles the command via signal connection
 
+**Variable Substitution:**
+
+You can embed state values in commands using `{GlobalStateManager.runtime_state["key"]["nested"]}` or `{GlobalStateManager.persistent_data["key"]["nested"]}` syntax. They're replaced before sending:
+
+```
+cmd message tutorial Your score is: {GlobalStateManager.persistent_data["statistics"]["high_scores"]["game1"]}
+cmd message tutorial Current choice: {GlobalStateManager.runtime_state["tutorial"]["current_choice"]}
+cmd message tutorial Volume: {GlobalStateManager.persistent_data["settings"]["volume"]}
+```
+
+Values are traversed through nested dictionaries. Variables that don't exist return `null` and remain unchanged.
+
 ### jump
 
 Unconditionally moves execution to a marker.
@@ -97,17 +113,36 @@ jump game_over
 - Can jump forward or backward
 - Useful for loops and skipping sections
 
-### if
+### signal
 
-Conditionally jumps to a marker based on game state.
+Calls a function on the state provider node.
 
-**Syntax:** `if <key> <operator> <value> -> <marker_name>`
+**Syntax:** `signal <function_name>`
 
 ```
-if score > 100 -> high_score_path
-if tutorial_complete == true -> skip_tutorial
-if lives <= 0 -> game_over
-if name == "secret" -> easter_egg
+signal player_scored
+signal unlock_achievement
+signal on_tutorial_complete
+signal trigger_checkpoint
+```
+
+**Notes:**
+- The function must exist on the state_provider node
+- The function is called with no arguments
+- The state_provider is typically the frontend/app that manages game state
+- Use this to trigger events or callbacks in your game
+
+### if
+
+Conditionally jumps to a marker based on GlobalStateManager state.
+
+**Syntax:** `if GlobalStateManager.<state_type>["key"]["nested"] <operator> <value> -> <marker_name>`
+
+```
+if GlobalStateManager.runtime_state["tutorial"]["complete"] == true -> already_done
+if GlobalStateManager.persistent_data["statistics"]["high_scores"]["game1"] > 100 -> high_score_path
+if GlobalStateManager.runtime_state["player"]["health"] <= 0 -> game_over
+if GlobalStateManager.persistent_data["settings"]["difficulty"] >= 2 -> hard_mode
 ```
 
 **Operators:**
@@ -123,11 +158,16 @@ if name == "secret" -> easter_egg
 - `123` / `45.67` - numbers
 - `"quoted string"` - strings
 
+**State Types:**
+- `runtime_state` - temporary state (not saved between sessions)
+- `persistent_data` - saved state (preserved on load)
+
 **Notes:**
-- Optional `state.` prefix is stripped: `state.score` and `score` are equivalent
+- State paths use GlobalStateManager syntax with nested dictionary access
 - If condition is false, execution continues to the next line
 - If condition is true, execution jumps to the marker
-- Override `_get_state_value()` in a subclass to connect to your state manager
+- Missing keys return `null` and are treated as false
+- Supports arbitrary nesting levels: `["a"]["b"]["c"]["d"]`
 
 ## Signals
 
@@ -198,14 +238,26 @@ match interpreter.get_state():
 
 ### Connecting to Game State
 
-Override `_get_state_value()` in a subclass:
+The DSL interpreter uses GlobalStateManager directly for all state access. No configuration needed - GlobalStateManager is a global autoload and is always available.
+
+**Example state setup in your frontend:**
 
 ```gdscript
-class_name GameDSLInterpreter
-extends DSLInterpreter
+# Set runtime state (temporary)
+GlobalStateManager.runtime_state["tutorial"] = {}
+GlobalStateManager.runtime_state["tutorial"]["current_choice"] = 1
+GlobalStateManager.runtime_state["tutorial"]["complete"] = false
 
-func _get_state_value(key: String):
-	return GlobalState.get_value(key, null)
+# Set persistent data (saved)
+GlobalStateManager.persistent_data["statistics"]["high_scores"]["game1"] = 250
+GlobalStateManager.persistent_data["settings"]["difficulty"] = 2
+```
+
+Then reference these values in your DSL:
+
+```
+if GlobalStateManager.runtime_state["tutorial"]["complete"] == true -> done
+cmd message tutorial Current choice: {GlobalStateManager.runtime_state["tutorial"]["current_choice"]}
 ```
 
 ### Handling Terminal Commands
@@ -223,8 +275,10 @@ Commands are sent through the global command interface using `cmd message <chann
 
 ## Complete Example
 
+This example demonstrates all DSL commands in a single tutorial sequence:
+
 ```
-# tutorial.dsl - A simple tutorial sequence
+# tutorial.dsl - Complete tutorial with all command types
 
 :start
 cmd message tutorial_face smile
@@ -233,28 +287,78 @@ cmd message tutorial_player [Press SPACE to continue]
 wait_input space
 
 cmd message tutorial_face neutral
-cmd message tutorial Let's check your progress.
-cmd message tutorial_player
-if tutorial_complete == true -> already_done
+cmd message tutorial Let's check your progress...
+cmd message tutorial Your current choice: {GlobalStateManager.runtime_state["tutorial"]["current_choice"]}
+cmd message tutorial High score: {GlobalStateManager.persistent_data["statistics"]["high_scores"]["game1"]}
+signal on_tutorial_started
+wait_time 1.5
 
-:show_tutorial
+# If statements check GlobalStateManager state and jump to markers if true
+if GlobalStateManager.runtime_state["tutorial"]["complete"] == true -> already_done
+if GlobalStateManager.persistent_data["statistics"]["high_scores"]["game1"] >= 100 -> high_score_path
+if GlobalStateManager.runtime_state["player"]["lives"] != 3 -> lost_lives
+if GlobalStateManager.persistent_data["settings"]["difficulty"] > 1 -> hard_mode
+
+# If the condition is false, execution continues to next line
 cmd message tutorial This is how you play...
 cmd message tutorial_player [Press SPACE to continue]
-wait_input space
-jump end
+wait_input any -> end
+
+:high_score_path
+cmd message tutorial_face excited
+cmd message tutorial Wow, high score of {GlobalStateManager.persistent_data["statistics"]["high_scores"]["game1"]}!
+signal on_high_score
+cmd message tutorial_player [Press any key to continue]
+wait_input any -> end
+
+:lost_lives
+cmd message tutorial_face concerned
+cmd message tutorial You lost a life! {GlobalStateManager.runtime_state["player"]["lives"]} remaining...
+signal on_lost_life
+cmd message tutorial_player [Press any key to continue]
+wait_input any -> end
+
+:hard_mode
+cmd message tutorial_face serious
+cmd message tutorial Hard mode selected!
+signal on_hard_mode
+cmd message tutorial_player [Press any key to continue]
+wait_input any -> end
 
 :already_done
 cmd message tutorial_face smile
 cmd message tutorial You've already completed the tutorial!
-cmd message tutorial_player [Press SPACE to continue]
-wait_input space
+signal on_tutorial_complete
+cmd message tutorial_player [Press any key to continue]
+wait_input any -> end
 
 :end
 cmd message tutorial_face neutral
-cmd message tutorial Good luck!
+cmd message tutorial Good luck out there!
 cmd message tutorial_player
 wait_time 2.0
 ```
+
+**Key formatting notes:**
+
+*If statements:*
+- Syntax: `if GlobalStateManager.<state_type>["key"]["nested"] <operator> <value> -> <marker_name>`
+- State types: `runtime_state` (temporary) or `persistent_data` (saved)
+- Values can be: booleans (`true`/`false`), numbers (`100`, `1.5`), or strings (`"quoted"`)
+- If the condition is **true**, jump to the marker
+- If the condition is **false**, continue to the next line
+
+*Variable substitution:*
+- Syntax: `{GlobalStateManager.<state_type>["key"]["nested"]}`
+- Supports arbitrary nesting levels
+- Values are substituted into command text before execution
+- Missing keys remain unchanged
+
+*Wait input with jump:*
+- Syntax: `wait_input <input_name> -> <marker_name>`
+- When the specified input is received, jump to the marker
+- Useful for creating branching paths based on player input
+- `wait_input any -> marker` accepts any input before jumping
 
 ## Error Handling
 

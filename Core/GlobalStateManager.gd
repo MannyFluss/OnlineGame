@@ -71,7 +71,7 @@ func save_game() -> bool:
 	# Create save directory if it doesn't exist
 	if not DirAccess.dir_exists_absolute(SAVE_PATH):
 		DirAccess.make_dir_absolute(SAVE_PATH)
-		
+
 	var json_string = JSON.stringify(persistent_data)
 	var file = FileAccess.open(SAVE_PATH + SAVE_FILE, FileAccess.WRITE)
 	if file == null:

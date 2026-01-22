@@ -48,15 +48,14 @@ wait_input space
 Sometimes we have to do things we dont want do, but one way we can make it easier to do those things is by not thinking about them!>
 wait_input space
 
-<cmd message tutorial Lesson4: Living with the consequences of your actions
+<cmd message tutorial Lesson4:
+Living with the consequences of your actions
+
 Sometimes we do something that we can not so easily forget. If we can not forget what we have done, we want to make sure we hold those feelings in forever so that onlookers don't suspect a thing.>
 wait_input space
 
 cmd music stop
-wait_input space
-
-
-cmd message tutorial_face angry 
+cmd message tutorial_face angry
 wait_input space
 
 cmd music QuizSong
@@ -79,8 +78,6 @@ Option3: changeroo
 >
 wait_input space
 
-
-
 <cmd message tutorial 3: how do you change you live with yourself?
 Option1: with relative ease       
 Option2: with a heavy conscious  
@@ -88,10 +85,6 @@ Option3: tehe ;)
 >
 wait_input space
 
-
-
 :loop
 
-wait_input 
-cmd sfx click
-jump loop
+wait_input any -> loop

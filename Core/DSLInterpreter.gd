@@ -5,6 +5,7 @@ signal terminal_command(command_text: String)
 signal timeline_started()
 signal timeline_ended()
 signal waiting_for_input(input_name: String)
+signal DSL_file_signal(signal_name:String)
 
 enum State { IDLE, RUNNING, WAITING_INPUT, WAITING_TIME }
 
@@ -14,7 +15,6 @@ var _markers: Dictionary = {}
 var _program_counter: int = 0
 var _waiting_for: String = ""
 var _time_remaining: float = 0.0
-
 
 func load_file(path: String) -> bool:
 	var file = FileAccess.open(path, FileAccess.READ)
@@ -154,7 +154,7 @@ func _parse_instruction(token: String) -> Dictionary:
 
 	match command:
 		"wait_input":
-			return {"type": "wait_input", "input": rest.strip_edges()}
+			return _parse_wait_input(rest)
 
 		"wait_time":
 			return {"type": "wait_time", "duration": float(rest.strip_edges())}
@@ -162,43 +162,108 @@ func _parse_instruction(token: String) -> Dictionary:
 		"jump":
 			return {"type": "jump", "marker": rest.strip_edges()}
 
-		"if":
-			return _parse_if(rest)
-
 		"cmd":
 			return {"type": "cmd", "text": rest}
+
+		"signal":
+			return _parse_signal(rest)
+
+		"if":
+			return _parse_if(rest)
 
 		_:
 			push_warning("DSLInterpreter: Unknown command: %s" % command)
 			return {}
 
 
+func _parse_signal(rest: String) -> Dictionary:
+	var function_name = rest.strip_edges()
+
+	if function_name.is_empty():
+		return {}
+
+	return {
+		"type": "signal",
+		"function": function_name
+	}
+
+
+func _parse_wait_input(rest: String) -> Dictionary:
+	# Format: input_name or input_name -> marker_name
+	var parts = rest.split("->", false)
+	var input_name = parts[0].strip_edges()
+	var marker = ""
+
+	if parts.size() > 1:
+		marker = parts[1].strip_edges()
+
+	return {"type": "wait_input", "input": input_name, "marker": marker}
+
+
 func _parse_if(rest: String) -> Dictionary:
-	# Format: state.key operator value -> marker
-	var parts = _split_respecting_quotes(rest)
-
-	var arrow_index = parts.find("->")
-	if arrow_index == -1 or arrow_index < 3:
+	# Format: GlobalStateManager.path operator value -> marker_name
+	var parts = rest.split("->", false)
+	if parts.size() != 2:
+		push_warning("DSLInterpreter: Invalid if syntax, expected '-> marker': %s" % rest)
 		return {}
 
-	var key = parts[0]
-	var operator = parts[1]
-	var value = parts[2]
-	var marker = parts[arrow_index + 1] if arrow_index + 1 < parts.size() else ""
+	var condition_str = parts[0].strip_edges()
+	var marker = parts[1].strip_edges()
 
-	if marker.is_empty():
+	# Parse the condition: path operator value
+	# Operators: ==, !=, >=, <=, >, <
+	var operator = ""
+	var operator_pos = -1
+
+	# Check operators in order (longer first to avoid partial matches)
+	for op in ["==", "!=", ">=", "<=", ">", "<"]:
+		var pos = condition_str.find(op)
+		if pos != -1:
+			operator = op
+			operator_pos = pos
+			break
+
+	if operator.is_empty():
+		push_warning("DSLInterpreter: No operator found in if condition: %s" % rest)
 		return {}
 
-	if key.begins_with("state."):
-		key = key.substr(6)
+	var path = condition_str.substr(0, operator_pos).strip_edges()
+	var value_str = condition_str.substr(operator_pos + operator.length()).strip_edges()
 
 	return {
 		"type": "if",
-		"key": key,
+		"path": path,
 		"operator": operator,
-		"value": _parse_value(value),
+		"value": _parse_value(value_str),
 		"marker": marker
 	}
+
+
+func _evaluate_condition(instruction: Dictionary) -> bool:
+	var actual_value = _get_state_value_from_path(instruction.path)
+
+	if actual_value == null:
+		return false
+
+	var expected_value = instruction.value
+	var operator = instruction.operator
+
+	match operator:
+		"==":
+			return actual_value == expected_value
+		"!=":
+			return actual_value != expected_value
+		">":
+			return actual_value > expected_value
+		"<":
+			return actual_value < expected_value
+		">=":
+			return actual_value >= expected_value
+		"<=":
+			return actual_value <= expected_value
+		_:
+			push_error("DSLInterpreter: Unknown operator: %s" % operator)
+			return false
 
 
 func _parse_value(value_str: String):
@@ -216,6 +281,80 @@ func _parse_value(value_str: String):
 		return value_str.substr(1, value_str.length() - 2)
 
 	return value_str
+
+
+func _get_state_value_from_path(path: String) -> Variant:
+	# Parse paths like: GlobalStateManager.runtime_state["key"]["nested"]
+	# or: GlobalStateManager.persistent_data["key"]["nested"]
+
+	if not path.begins_with("GlobalStateManager."):
+		push_warning("DSLInterpreter: Invalid state path: %s" % path)
+		return null
+
+	var remainder = path.substr("GlobalStateManager.".length())
+
+	# Extract state type (runtime_state or persistent_data)
+	var state_type = ""
+	var keys_start = -1
+
+	if remainder.begins_with("runtime_state"):
+		state_type = "runtime_state"
+		keys_start = "runtime_state".length()
+	elif remainder.begins_with("persistent_data"):
+		state_type = "persistent_data"
+		keys_start = "persistent_data".length()
+	else:
+		push_warning("DSLInterpreter: Unknown state type in path: %s" % path)
+		return null
+
+	# Extract all keys from bracket notation: ["key"]["nested"]...
+	var keys: Array = []
+	var bracket_pattern = RegEx.new()
+	bracket_pattern.compile("\\[\"([^\"]+)\"\\]")
+
+	var matches = bracket_pattern.search_all(remainder.substr(keys_start))
+	for match in matches:
+		keys.append(match.get_string(1))
+
+	if keys.is_empty():
+		push_warning("DSLInterpreter: No keys found in state path: %s" % path)
+		return null
+
+	# Get the state dictionary
+	var state_dict = null
+	if state_type == "runtime_state":
+		state_dict = GlobalStateManager.runtime_state
+	else:
+		state_dict = GlobalStateManager.persistent_data
+
+	# Traverse the nested dictionary
+	var current = state_dict
+	for key in keys:
+		if current is Dictionary and key in current:
+			current = current[key]
+		else:
+			# Key doesn't exist, return null
+			return null
+
+	return current
+
+
+func _substitute_variables(text: String) -> String:
+	# Replace {GlobalStateManager.runtime_state["key"]["nested"]} patterns
+	var result = text
+	var pattern = RegEx.new()
+	pattern.compile("\\{GlobalStateManager\\.(runtime_state|persistent_data)(\\[\"[^\"]+\"\\])+\\}")
+
+	var matches = pattern.search_all(text)
+	for match in matches:
+		var full_pattern = match.get_string(0)  # e.g., {GlobalStateManager.runtime_state["key"]}
+		var path = full_pattern.substr(1, full_pattern.length() - 2)  # Remove { }
+		var value = _get_state_value_from_path(path)
+
+		if value != null:
+			result = result.replace(full_pattern, str(value))
+
+	return result
 
 
 func _split_respecting_quotes(line: String) -> Array:
@@ -273,7 +412,8 @@ func _execute_next() -> void:
 func _execute_instruction(instruction: Dictionary) -> bool:
 	match instruction.type:
 		"cmd":
-			terminal_command.emit(instruction.text)
+			var substituted_text = _substitute_variables(instruction.text)
+			terminal_command.emit(substituted_text)
 			return true
 
 		"wait_input":
@@ -295,37 +435,25 @@ func _execute_instruction(instruction: Dictionary) -> bool:
 			return true
 
 		"if":
-			var result = _evaluate_condition(instruction)
-			if result and _markers.has(instruction.marker):
-				_program_counter = _markers[instruction.marker]
+			if _evaluate_condition(instruction):
+				if _markers.has(instruction.marker):
+					_program_counter = _markers[instruction.marker]
+				else:
+					push_error("DSLInterpreter: Unknown marker: %s" % instruction.marker)
+			return true
+
+		"signal":
+			_call_target_function(instruction.function)
 			return true
 
 	return true
 
 
-func _evaluate_condition(instruction: Dictionary) -> bool:
-	var actual = _get_state_value(instruction.key)
-	var expected = instruction.value
-
-	match instruction.operator:
-		"==":
-			return actual == expected
-		"!=":
-			return actual != expected
-		">":
-			return actual > expected
-		"<":
-			return actual < expected
-		">=":
-			return actual >= expected
-		"<=":
-			return actual <= expected
-
-	return false
 
 
-func _get_state_value(key: String):
-	return null
+func _call_target_function(_signal_name: String) -> void:
+	push_error("not implemented")
+
 
 
 func receive_input(input_name: String) -> void:
@@ -335,6 +463,16 @@ func receive_input(input_name: String) -> void:
 	if _waiting_for == input_name or _waiting_for == "any":
 		_current_state = State.RUNNING
 		_waiting_for = ""
+
+		# Check if the current instruction has a jump marker
+		if _program_counter > 0:
+			var prev_instruction = _instructions[_program_counter - 1]
+			if prev_instruction.type == "wait_input" and prev_instruction.has("marker") and prev_instruction.marker != "":
+				if _markers.has(prev_instruction.marker):
+					_program_counter = _markers[prev_instruction.marker]
+				else:
+					push_error("DSLInterpreter: Unknown marker: %s" % prev_instruction.marker)
+
 		_execute_next()
 
 

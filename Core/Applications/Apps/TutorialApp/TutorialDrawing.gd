@@ -119,6 +119,8 @@ func _draw() -> void:
 			draw_circle(left_eye_pos, eye_radius, color_angry, false, line_width)
 			draw_circle(right_eye_pos, eye_radius, color_angry, false, line_width)
 			draw_arc(mouth_center, mouth_radius, PI, 2 * PI, arc_point_count, color_angry, line_width)
+			draw_line(left_eye_pos+Vector2(-100,-200),left_eye_pos+Vector2(100,-100),color_angry,line_width)
+			draw_line(right_eye_pos+Vector2(-100,-100),right_eye_pos+Vector2(100,-200),color_angry,line_width)
 		"smile":
 			draw_circle(left_eye_pos, eye_radius, color_default, false, line_width)
 			draw_circle(right_eye_pos, eye_radius, color_default, false, line_width)

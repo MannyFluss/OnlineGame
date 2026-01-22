@@ -1,0 +1,42 @@
+# test_state_functions.txt - Test DSL for GlobalStateManager variable substitution and if statements
+
+:start
+# Test 1: Variable substitution in cmd
+cmd message tutorial Test 1: Variable substitution
+cmd message tutorial Current choice: {GlobalStateManager.runtime_state["tutorial"]["current_choice"]}
+wait_input space
+cmd message tutorial Choice active: {GlobalStateManager.runtime_state["tutorial"]["current_choice_active"]}
+wait_input space
+
+# Test 2: If condition - true branch
+cmd message tutorial Test 2: If condition (current_choice == 1)
+if GlobalStateManager.runtime_state["tutorial"]["current_choice"] == 1 -> choice_is_one
+cmd message tutorial Choice is NOT 1
+jump after_choice_test
+
+:choice_is_one
+cmd message tutorial Choice IS 1!
+
+:after_choice_test
+wait_input space
+
+# Test 3: If condition with comparison
+cmd message tutorial Test 3: If condition (current_choice != 1)
+if GlobalStateManager.runtime_state["tutorial"]["current_choice"] != 1 -> choice_is_not_one
+cmd message tutorial This line shows if choice == 1
+jump after_comparison_test
+
+:choice_is_not_one
+cmd message tutorial Choice is not 1
+
+:after_comparison_test
+wait_input space
+
+# Test 4: Nested state access
+cmd message tutorial Test 4: Complete the test
+cmd message tutorial Tutorial complete: {GlobalStateManager.runtime_state["tutorial"]["complete"]}
+wait_input space
+
+:end
+cmd message tutorial All tests completed!
+wait_time 1.0
