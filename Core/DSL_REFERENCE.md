@@ -182,18 +182,18 @@ interpreter.receive_input("confirm")
 ```gdscript
 # Check if timeline is active
 if interpreter.is_running():
-    pass
+	pass
 
 # Get detailed state
 match interpreter.get_state():
-    DSLInterpreter.State.IDLE:
-        print("Not running")
-    DSLInterpreter.State.RUNNING:
-        print("Executing")
-    DSLInterpreter.State.WAITING_INPUT:
-        print("Waiting for input")
-    DSLInterpreter.State.WAITING_TIME:
-        print("Waiting for timer")
+	DSLInterpreter.State.IDLE:
+		print("Not running")
+	DSLInterpreter.State.RUNNING:
+		print("Executing")
+	DSLInterpreter.State.WAITING_INPUT:
+		print("Waiting for input")
+	DSLInterpreter.State.WAITING_TIME:
+		print("Waiting for timer")
 ```
 
 ### Connecting to Game State
@@ -205,7 +205,7 @@ class_name GameDSLInterpreter
 extends DSLInterpreter
 
 func _get_state_value(key: String):
-    return GlobalState.get_value(key, null)
+	return GlobalState.get_value(key, null)
 ```
 
 ### Handling Terminal Commands
@@ -216,7 +216,7 @@ Connect to the `terminal_command` signal:
 interpreter.terminal_command.connect(_on_terminal_command)
 
 func _on_terminal_command(command_text: String) -> void:
-    CommandInterface.execute_text_command(command_text)
+	CommandInterface.execute_text_command(command_text)
 ```
 
 Commands are sent through the global command interface using `cmd message <channel> <text>`. Frontends subscribe to specific channels via `GlobalOutput.text_outputted`.

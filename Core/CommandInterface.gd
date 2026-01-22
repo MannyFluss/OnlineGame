@@ -75,7 +75,9 @@ func _handle_message_command(command: Command) -> void:
 	if command.subcommand.size() < 3:
 		GlobalOutput.send_to_output("Usage: message [channel] [message]")
 		return
-
+	if command.subcommand[2] == "clr":
+		GlobalOutput.send_to_output("",command.subcommand[1])
+		return
 	var channel: String = command.subcommand[1]
 	var message: String = command.raw_command.trim_prefix("message").strip_edges()
 	message = message.trim_prefix(channel).strip_edges()

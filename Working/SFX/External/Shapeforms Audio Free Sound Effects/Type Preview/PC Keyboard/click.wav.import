@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cnkmvc6rcnbre"
+path="res://.godot/imported/click.wav-e20fe9e07e975bb63fdfcddc077ad0ac.sample"
+
+[deps]
+
+source_file="res://Working/SFX/External/Shapeforms Audio Free Sound Effects/Type Preview/PC Keyboard/click.wav"
+dest_files=["res://.godot/imported/click.wav-e20fe9e07e975bb63fdfcddc077ad0ac.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

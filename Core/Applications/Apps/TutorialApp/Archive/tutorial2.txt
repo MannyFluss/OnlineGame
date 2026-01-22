@@ -1,0 +1,187 @@
+# tutorial_johnson.dsl - Tutorial Johnson, M.D. Dialogue System
+# A tutorial about taking notes and paying attention
+
+:start
+# === FACE & DIALOG INTRO ===
+
+<cmd message tutorial_face angry>
+<cmd message tutorial_player (press space to continue...)>
+
+<cmd message tutorial
+
+this full message
+
+should display
+
+with spaces and all
+>
+
+
+wait_input space
+
+cmd message tutorial<
+Name Tutorial Johnson, M.D.
+
+Likes: -Teaching -Knowledge    
+			-Good Listeners -Pondering   
+
+Dislikes: -People who dont take notes
+			 -People who dont pay attention
+
+. . . 
+>
+
+wait_input space
+
+:end
+
+# === CHARACTER TRAITS SETUP ===
+# [USER: Optionally display character information]
+
+wait_input space
+
+# === SETUP MESSAGE ===
+cmd message tutorial "Let's make sure you're up to speed for the important days ahead."
+cmd message tutorial "Make sure you pay attention and take notes!"
+cmd message tutorial_player [Press SPACE to continue]
+wait_input space
+
+# === ANIMATION PLAYBACK ===
+# [USER: Specify animation name/file to play]
+cmd play animation_intro.res
+wait_time 3.0
+
+# === LESSON 1 ===
+# [USER: Fill in lesson 1 content and description]
+cmd message tutorial "Lesson 1: [USER LESSON CONTENT]"
+cmd play lesson_1_music.tres
+cmd message tutorial_player [Press SPACE to continue]
+wait_input space
+
+# === LESSON 2 ===
+# [USER: Fill in lesson 2 content and description]
+cmd message tutorial "Lesson 2: [USER LESSON CONTENT]"
+cmd play lesson_2_music.tres
+cmd message tutorial_player [Press SPACE to continue]
+wait_input space
+
+# === LESSON 3 ===
+# [USER: Fill in lesson 3 content and description]
+cmd message tutorial "Lesson 3: [USER LESSON CONTENT]"
+cmd play lesson_3_music.tres
+cmd message tutorial_player [Press SPACE to continue]
+wait_input space
+
+# === LESSON 4 ===
+# [USER: Fill in lesson 4 content and description]
+cmd message tutorial "Lesson 4: [USER LESSON CONTENT]"
+cmd play lesson_4_music.tres
+cmd message tutorial_player [Press SPACE to continue]
+wait_input space
+
+# === LESSON 5 ===
+# [USER: Fill in lesson 5 content and description]
+cmd message tutorial "Lesson 5: [USER LESSON CONTENT]"
+cmd play lesson_5_music.tres
+cmd message tutorial_player [Press SPACE to continue]
+wait_input space
+
+# === READY FOR QUIZ ===
+cmd message tutorial "All right... let's see if you were paying attention!"
+cmd play quiz_start_music.tres
+cmd message tutorial_player [Press SPACE to continue]
+wait_input space
+
+# === QUIZ QUESTION 1 ===
+# [INTERPRETER: Track answer to variable quiz_answer_1 (options: 1, 2, 3)]
+cmd message tutorial "Quiz Question 1:"
+cmd message tutorial "[USER: FILL IN QUESTION 1 TEXT]"
+cmd message tutorial "Option 1: [USER: FILL IN OPTION 1]"
+cmd message tutorial "Option 2: [USER: FILL IN OPTION 2]"
+cmd message tutorial "Option 3: [USER: FILL IN OPTION 3]"
+cmd message tutorial_player [Select 1, 2, or 3]
+wait_input any
+# [INTERPRETER: Validate answer and store result]
+:quiz_1_check
+# [INTERPRETER: Handle correct/incorrect feedback]
+
+# === QUIZ QUESTION 2 ===
+# [INTERPRETER: Track answer to variable quiz_answer_2 (options: 1, 2, 3)]
+cmd message tutorial "Quiz Question 2:"
+cmd message tutorial "[USER: FILL IN QUESTION 2 TEXT]"
+cmd message tutorial "Option 1: [USER: FILL IN OPTION 1]"
+cmd message tutorial "Option 2: [USER: FILL IN OPTION 2]"
+cmd message tutorial "Option 3: [USER: FILL IN OPTION 3]"
+cmd message tutorial_player [Select 1, 2, or 3]
+wait_input any
+# [INTERPRETER: Validate answer and store result]
+:quiz_2_check
+# [INTERPRETER: Handle correct/incorrect feedback]
+
+# === QUIZ QUESTION 3 ===
+# [INTERPRETER: Track answer to variable quiz_answer_3 (options: 1, 2, 3)]
+cmd message tutorial "Quiz Question 3:"
+cmd message tutorial "[USER: FILL IN QUESTION 3 TEXT]"
+cmd message tutorial "Option 1: [USER: FILL IN OPTION 1]"
+cmd message tutorial "Option 2: [USER: FILL IN OPTION 2]"
+cmd message tutorial "Option 3: [USER: FILL IN OPTION 3]"
+cmd message tutorial_player [Select 1, 2, or 3]
+wait_input any
+# [INTERPRETER: Validate answer and store result]
+:quiz_3_check
+# [INTERPRETER: Handle correct/incorrect feedback]
+
+# === QUIZ QUESTION 4 ===
+# [INTERPRETER: Track answer to variable quiz_answer_4 (options: 1, 2, 3)]
+cmd message tutorial "Quiz Question 4:"
+cmd message tutorial "[USER: FILL IN QUESTION 4 TEXT]"
+cmd message tutorial "Option 1: [USER: FILL IN OPTION 1]"
+cmd message tutorial "Option 2: [USER: FILL IN OPTION 2]"
+cmd message tutorial "Option 3: [USER: FILL IN OPTION 3]"
+cmd message tutorial_player [Select 1, 2, or 3]
+wait_input any
+# [INTERPRETER: Validate answer and store result]
+:quiz_4_check
+# [INTERPRETER: Handle correct/incorrect feedback]
+
+# === FINAL QUESTION ===
+# [USER: This is about whether the player was taking notes]
+cmd message tutorial "Before we wrap up, I have one more question..."
+cmd message tutorial_player [Press SPACE to continue]
+wait_input space
+
+cmd message tutorial "Were you taking notes?"
+cmd message tutorial "Yes"
+cmd message tutorial "No"
+cmd message tutorial_player [Select Yes or No]
+wait_input any
+# [INTERPRETER: Track answer to variable final_answer (yes/no)]
+
+:final_answer_yes
+# Player answered YES
+cmd play success_music.tres
+cmd message tutorial_face smile
+cmd message tutorial "Excellent! You were paying attention and taking notes."
+cmd message tutorial "Use a notebook for important information like this."
+cmd message tutorial_face happy
+cmd message tutorial "You're going to do great!"
+cmd message tutorial_player [Press SPACE to exit]
+wait_input space
+:end
+
+:final_answer_no
+# Player answered NO
+cmd play angry_music.tres
+cmd message tutorial_face angry
+cmd message tutorial "I suspected as much..."
+cmd message tutorial "You should really take notes! It helps you remember."
+cmd message tutorial_face neutral
+cmd message tutorial "Try again next time and keep a notebook handy."
+cmd message tutorial_player [Press SPACE to exit]
+wait_input space
+:end
+
+# === DEVELOPER NOTES ===
+# [DEVELOPER: Use a notebook to track story state and variable updates]
+# [DEVELOPER: Ensure all branching paths (yes/no) are tested]
+# [DEVELOPER: Space key should exit tutorial when at final state]

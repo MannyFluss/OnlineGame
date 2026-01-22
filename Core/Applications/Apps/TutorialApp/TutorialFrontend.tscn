@@ -59,7 +59,6 @@ size_flags_horizontal = 3
 
 [node name="TutorialDrawing" type="Node2D" parent="Control/VBoxContainer/Control/HBoxContainer/MarginContainer"]
 script = ExtResource("2_oof4p")
-current_face = "suprised"
 eye_offset_x_ratio = 0.65
 mouth_offset_y_ratio = 0.55
 line_width = 50.0
@@ -71,16 +70,6 @@ size_flags_horizontal = 3
 [node name="TutorialJohnsonOutput" type="RichTextLabel" parent="Control/VBoxContainer/Control/HBoxContainer/MarginContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Name Tutorial Johnson, M.D.
-
-
-Likes: -Teaching -Knowledge    
-            -Good Listeners -Pondering   
-
-Dislikes: -People who dont take notes
-             -People who dont pay attention
-
-. . ."
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -88,6 +77,5 @@ vertical_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-text = ">option1 >option2 >option3"
 horizontal_alignment = 1
 vertical_alignment = 1

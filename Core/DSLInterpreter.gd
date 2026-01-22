@@ -32,116 +32,163 @@ func parse(content: String) -> bool:
 	_markers.clear()
 	_program_counter = 0
 
-	var lines = content.split("\n")
+	var tokens = _tokenize(content)
 	var instruction_index = 0
-	var i = 0
 
-	while i < lines.size():
-		var line = lines[i]
-		line = line.strip_edges()
-
-		# Skip empty lines and comments
-		if line.is_empty() or line.begins_with("#"):
-			i += 1
-			continue
-
+	for token in tokens:
 		# Marker definition
-		if line.begins_with(":"):
-			var marker_name = line.substr(1).strip_edges()
+		if token.begins_with(":"):
+			var marker_name = token.substr(1).strip_edges()
 			_markers[marker_name] = instruction_index
-			i += 1
 			continue
 
-		# Check if line contains < (start of multi-line content)
-		if line.contains("<"):
-			var full_instruction = line
-			# Accumulate lines until we find >
-			while i < lines.size() and not full_instruction.contains(">"):
-				i += 1
-				if i < lines.size():
-					full_instruction += "\n" + lines[i]
-
-			var instruction = _parse_instruction(full_instruction)
-			if instruction.is_empty():
-				push_warning("DSLInterpreter: Could not parse instruction: %s" % full_instruction)
-			else:
-				_instructions.append(instruction)
-				instruction_index += 1
+		# Parse instruction
+		var instruction = _parse_instruction(token)
+		if instruction.is_empty():
+			push_warning("DSLInterpreter: Could not parse: %s" % token.substr(0, min(50, token.length())))
 		else:
-			# Parse instruction
-			var instruction = _parse_instruction(line)
-			if instruction.is_empty():
-				push_warning("DSLInterpreter: Could not parse line: %s" % line)
-			else:
-				_instructions.append(instruction)
-				instruction_index += 1
-
-		i += 1
+			_instructions.append(instruction)
+			instruction_index += 1
 
 	return true
 
 
-func _parse_instruction(line: String) -> Dictionary:
-	var parts = _split_respecting_quotes(line)
-	if parts.is_empty():
-		return {}
+func _tokenize(content: String) -> Array:
+	var tokens: Array = []
+	var i = 0
+	var length = content.length()
 
-	var command = parts[0]
-	var args = parts.slice(1)
+	while i < length:
+		# Skip whitespace between tokens
+		while i < length and content[i] in [' ', '\t', '\n', '\r']:
+			i += 1
+
+		if i >= length:
+			break
+
+		# Comment - skip to end of line
+		if content[i] == '#':
+			while i < length and content[i] != '\n':
+				i += 1
+			continue
+
+		# Marker - read until end of line or whitespace
+		if content[i] == ':':
+			var start = i
+			i += 1
+			while i < length and content[i] not in [' ', '\t', '\n', '\r']:
+				i += 1
+			tokens.append(content.substr(start, i - start))
+			continue
+
+		# Bracket-delimited instruction: <...>
+		if content[i] == '<':
+			var start = i + 1
+			var depth = 1
+			i += 1
+			while i < length and depth > 0:
+				if content[i] == '<':
+					depth += 1
+				elif content[i] == '>':
+					depth -= 1
+				i += 1
+			var inner = content.substr(start, i - start - 1)
+			tokens.append(inner.strip_edges())
+			continue
+
+		# Non-bracketed instruction - read until we hit < or newline
+		var start = i
+		while i < length:
+			if content[i] == '\n':
+				i += 1
+				break
+			if content[i] == '<':
+				# Command followed by <content>
+				var cmd_part = content.substr(start, i - start)
+				i += 1  # skip <
+				var content_start = i
+				var depth = 1
+				while i < length and depth > 0:
+					if content[i] == '<':
+						depth += 1
+					elif content[i] == '>':
+						depth -= 1
+					i += 1
+				var bracket_content = content.substr(content_start, i - content_start - 1)
+				# Combine: "cmd message tutorial" + content
+				tokens.append(cmd_part.strip_edges() + "\n" + bracket_content)
+				start = -1
+				break
+			i += 1
+
+		if start != -1 and i > start:
+			var line = content.substr(start, i - start).strip_edges()
+			if not line.is_empty():
+				tokens.append(line)
+
+	return tokens
+
+
+func _parse_instruction(token: String) -> Dictionary:
+	# Find the command (first word)
+	var first_space = -1
+	var first_newline = token.find("\n")
+
+	for j in range(token.length()):
+		if token[j] == ' ' or token[j] == '\t':
+			first_space = j
+			break
+
+	var command: String
+	var rest: String
+
+	if first_space == -1 and first_newline == -1:
+		command = token
+		rest = ""
+	elif first_newline != -1 and (first_space == -1 or first_newline < first_space):
+		command = token.substr(0, first_newline).strip_edges()
+		rest = token.substr(first_newline + 1)
+	else:
+		command = token.substr(0, first_space)
+		rest = token.substr(first_space + 1)
 
 	match command:
 		"wait_input":
-			if args.size() < 1:
-				return {}
-			return {"type": "wait_input", "input": args[0]}
+			return {"type": "wait_input", "input": rest.strip_edges()}
 
 		"wait_time":
-			if args.size() < 1:
-				return {}
-			return {"type": "wait_time", "duration": float(args[0])}
+			return {"type": "wait_time", "duration": float(rest.strip_edges())}
 
 		"jump":
-			if args.size() < 1:
-				return {}
-			return {"type": "jump", "marker": args[0]}
+			return {"type": "jump", "marker": rest.strip_edges()}
 
 		"if":
-			return _parse_if(args)
+			return _parse_if(rest)
 
 		"cmd":
-			# Everything after "cmd " is the terminal command
-			var cmd_start = line.find("cmd ") + 4
-			var cmd_text = line.substr(cmd_start).strip_edges()
-
-			# Extract content between < and >
-			var angle_start = cmd_text.find("<")
-			var angle_end = cmd_text.rfind(">")
-			if angle_start != -1 and angle_end != -1 and angle_end > angle_start:
-				cmd_text = cmd_text.substr(angle_start + 1, angle_end - angle_start - 1)
-
-			return {"type": "cmd", "text": cmd_text}
+			return {"type": "cmd", "text": rest}
 
 		_:
 			push_warning("DSLInterpreter: Unknown command: %s" % command)
 			return {}
 
 
-func _parse_if(args: Array) -> Dictionary:
-	# Format: if state.key operator value -> marker
-	# Example: if state.score > 100 -> high_score
-	var arrow_index = args.find("->")
+func _parse_if(rest: String) -> Dictionary:
+	# Format: state.key operator value -> marker
+	var parts = _split_respecting_quotes(rest)
+
+	var arrow_index = parts.find("->")
 	if arrow_index == -1 or arrow_index < 3:
 		return {}
 
-	var key = args[0]
-	var operator = args[1]
-	var value = args[2]
-	var marker = args[arrow_index + 1] if arrow_index + 1 < args.size() else ""
+	var key = parts[0]
+	var operator = parts[1]
+	var value = parts[2]
+	var marker = parts[arrow_index + 1] if arrow_index + 1 < parts.size() else ""
 
 	if marker.is_empty():
 		return {}
 
-	# Remove "state." prefix if present
 	if key.begins_with("state."):
 		key = key.substr(6)
 
@@ -155,19 +202,16 @@ func _parse_if(args: Array) -> Dictionary:
 
 
 func _parse_value(value_str: String):
-	# Boolean
 	if value_str == "true":
 		return true
 	if value_str == "false":
 		return false
 
-	# Number
 	if value_str.is_valid_int():
 		return int(value_str)
 	if value_str.is_valid_float():
 		return float(value_str)
 
-	# String (strip quotes)
 	if value_str.begins_with("\"") and value_str.ends_with("\""):
 		return value_str.substr(1, value_str.length() - 2)
 
@@ -222,7 +266,6 @@ func _execute_next() -> void:
 		if not should_continue:
 			return
 
-	# Reached end of instructions
 	if _current_state == State.RUNNING:
 		stop()
 
@@ -261,8 +304,6 @@ func _execute_instruction(instruction: Dictionary) -> bool:
 
 
 func _evaluate_condition(instruction: Dictionary) -> bool:
-	# Override this or connect to GlobalState
-	# For now, return false for unknown keys
 	var actual = _get_state_value(instruction.key)
 	var expected = instruction.value
 
@@ -284,8 +325,6 @@ func _evaluate_condition(instruction: Dictionary) -> bool:
 
 
 func _get_state_value(key: String):
-	# Override this method or connect to your GlobalState
-	# Default implementation returns null
 	return null
 
 
