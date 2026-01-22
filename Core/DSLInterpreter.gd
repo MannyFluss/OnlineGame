@@ -171,6 +171,12 @@ func _parse_instruction(token: String) -> Dictionary:
 		"if":
 			return _parse_if(rest)
 
+		"set_runtime":
+			return _parse_set_runtime(rest)
+
+		"set_persistent":
+			return _parse_set_persistent(rest)
+
 		_:
 			push_warning("DSLInterpreter: Unknown command: %s" % command)
 			return {}
@@ -185,6 +191,38 @@ func _parse_signal(rest: String) -> Dictionary:
 	return {
 		"type": "signal",
 		"function": function_name
+	}
+
+
+func _parse_set_runtime(rest: String) -> Dictionary:
+	var parts = rest.split(" ", false, 1)
+	if parts.size() < 2:
+		push_warning("DSLInterpreter: Invalid set_runtime syntax, expected 'key value': %s" % rest)
+		return {}
+
+	var key = parts[0].strip_edges()
+	var value = _parse_value(parts[1].strip_edges())
+
+	return {
+		"type": "set_runtime",
+		"key": key,
+		"value": value
+	}
+
+
+func _parse_set_persistent(rest: String) -> Dictionary:
+	var parts = rest.split(" ", false, 1)
+	if parts.size() < 2:
+		push_warning("DSLInterpreter: Invalid set_persistent syntax, expected 'key value': %s" % rest)
+		return {}
+
+	var key = parts[0].strip_edges()
+	var value = _parse_value(parts[1].strip_edges())
+
+	return {
+		"type": "set_persistent",
+		"key": key,
+		"value": value
 	}
 
 
@@ -323,9 +361,9 @@ func _get_state_value_from_path(path: String) -> Variant:
 	# Get the state dictionary
 	var state_dict = null
 	if state_type == "runtime_state":
-		state_dict = GlobalStateManager.runtime_state
+		state_dict = GlobalStateManager._runtime_state #read only operation
 	else:
-		state_dict = GlobalStateManager.persistent_data
+		state_dict = GlobalStateManager._persistent_data #read only operation
 
 	# Traverse the nested dictionary
 	var current = state_dict
@@ -340,17 +378,27 @@ func _get_state_value_from_path(path: String) -> Variant:
 
 
 func _substitute_variables(text: String) -> String:
-	# Replace {GlobalStateManager.runtime_state["key"]["nested"]} patterns
 	var result = text
-	var pattern = RegEx.new()
-	pattern.compile("\\{GlobalStateManager\\.(runtime_state|persistent_data)(\\[\"[^\"]+\"\\])+\\}")
 
-	var matches = pattern.search_all(text)
-	for match in matches:
-		var full_pattern = match.get_string(0)  # e.g., {GlobalStateManager.runtime_state["key"]}
-		var path = full_pattern.substr(1, full_pattern.length() - 2)  # Remove { }
-		var value = _get_state_value_from_path(path)
+	# Pattern 1: {GlobalStateManager.get_runtime("key")}
+	var runtime_pattern = RegEx.new()
+	runtime_pattern.compile("\\{GlobalStateManager\\.get_runtime\\(\"([^\"]+)\"\\)\\}")
+	var runtime_matches = runtime_pattern.search_all(text)
+	for match in runtime_matches:
+		var full_pattern = match.get_string(0)
+		var key = match.get_string(1)
+		var value = GlobalStateManager.get_runtime(key)
+		if value != null:
+			result = result.replace(full_pattern, str(value))
 
+	# Pattern 2: {GlobalStateManager.get_persistent("key")}
+	var persistent_pattern = RegEx.new()
+	persistent_pattern.compile("\\{GlobalStateManager\\.get_persistent\\(\"([^\"]+)\"\\)\\}")
+	var persistent_matches = persistent_pattern.search_all(text)
+	for match in persistent_matches:
+		var full_pattern = match.get_string(0)
+		var key = match.get_string(1)
+		var value = GlobalStateManager.get_persistent(key)
 		if value != null:
 			result = result.replace(full_pattern, str(value))
 
@@ -444,6 +492,14 @@ func _execute_instruction(instruction: Dictionary) -> bool:
 
 		"signal":
 			_call_target_function(instruction.function)
+			return true
+
+		"set_runtime":
+			GlobalStateManager.set_runtime(instruction.key, instruction.value)
+			return true
+
+		"set_persistent":
+			GlobalStateManager.set_persistent(instruction.key, instruction.value)
 			return true
 
 	return true

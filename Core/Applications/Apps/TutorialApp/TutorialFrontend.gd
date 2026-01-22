@@ -16,9 +16,6 @@ var current_choice_active : bool = false
 
 
 func _ready() -> void:
-
-	
-	
 	if Engine.is_editor_hint():
 		return
 	GlobalOutput.text_outputted.connect(_on_text_outputted)
@@ -43,26 +40,19 @@ func _on_text_outputted(data: String, channel: String) -> void:
 		CHANNEL_PLAYER:
 			_set_player_text(data)
 
-func _physics_process(_delta: float) -> void:
-	pass
-
 func _set_face(face_name: String) -> void:
 	if tutorial_drawing:
 		tutorial_drawing.current_face = face_name
-
 
 func _set_output_text(text: String) -> void:
 	if tutorial_johnson_output:
 		tutorial_johnson_output.text = text
 		tutorial_johnson_output.text = tutorial_johnson_output.text.insert(0,'------------------------------------------------\n\n')
 		tutorial_johnson_output.text = tutorial_johnson_output.text.insert(tutorial_johnson_output.text.length(),'\n\n------------------------------------------------')
-		
-
 
 func _set_player_text(text: String) -> void:
 	if player_text:
 		player_text.text = text
-
 
 func _on_dsl_command(command_text: String) -> void:
 	CommandInterface.execute_text_command(command_text)

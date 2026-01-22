@@ -88,15 +88,15 @@ cmd set_volume 0.5
 
 **Variable Substitution:**
 
-You can embed state values in commands using `{GlobalStateManager.runtime_state["key"]["nested"]}` or `{GlobalStateManager.persistent_data["key"]["nested"]}` syntax. They're replaced before sending:
+You can embed state values in commands using `{GlobalStateManager.get_runtime("key")}` or `{GlobalStateManager.get_persistent("key")}` syntax. They're replaced before sending:
 
 ```
-cmd message tutorial Your score is: {GlobalStateManager.persistent_data["statistics"]["high_scores"]["game1"]}
-cmd message tutorial Current choice: {GlobalStateManager.runtime_state["tutorial"]["current_choice"]}
-cmd message tutorial Volume: {GlobalStateManager.persistent_data["settings"]["volume"]}
+cmd message tutorial Your score is: {GlobalStateManager.get_persistent("high_score")}
+cmd message tutorial Current choice: {GlobalStateManager.get_runtime("tutorial_choice")}
+cmd message tutorial Volume: {GlobalStateManager.get_persistent("volume")}
 ```
 
-Values are traversed through nested dictionaries. Variables that don't exist return `null` and remain unchanged.
+Variables that don't exist return `null` and remain unchanged.
 
 ### jump
 
@@ -131,6 +131,36 @@ signal trigger_checkpoint
 - The function is called with no arguments
 - The state_provider is typically the frontend/app that manages game state
 - Use this to trigger events or callbacks in your game
+
+### set_runtime
+
+Sets a value in GlobalStateManager's runtime state.
+
+**Syntax:** `set_runtime <key> <value>`
+
+```
+set_runtime current_choice 1
+set_runtime tutorial_complete true
+set_runtime player_name "Alice"
+```
+
+- Value is parsed as a boolean (`true`/`false`), number, or string
+- Runtime state is temporary and not saved between sessions
+
+### set_persistent
+
+Sets a value in GlobalStateManager's persistent data.
+
+**Syntax:** `set_persistent <key> <value>`
+
+```
+set_persistent high_score 500
+set_persistent level_unlocked 3
+set_persistent player_name "Bob"
+```
+
+- Value is parsed as a boolean (`true`/`false`), number, or string
+- Persistent data is saved when you call `GlobalStateManager.save_game()`
 
 ### if
 
@@ -288,8 +318,8 @@ wait_input space
 
 cmd message tutorial_face neutral
 cmd message tutorial Let's check your progress...
-cmd message tutorial Your current choice: {GlobalStateManager.runtime_state["tutorial"]["current_choice"]}
-cmd message tutorial High score: {GlobalStateManager.persistent_data["statistics"]["high_scores"]["game1"]}
+cmd message tutorial Your current choice: {GlobalStateManager.get_runtime("tutorial_choice")}
+cmd message tutorial High score: {GlobalStateManager.get_persistent("high_score")}
 signal on_tutorial_started
 wait_time 1.5
 
@@ -306,14 +336,14 @@ wait_input any -> end
 
 :high_score_path
 cmd message tutorial_face excited
-cmd message tutorial Wow, high score of {GlobalStateManager.persistent_data["statistics"]["high_scores"]["game1"]}!
+cmd message tutorial Wow, high score of {GlobalStateManager.get_persistent("high_score")}!
 signal on_high_score
 cmd message tutorial_player [Press any key to continue]
 wait_input any -> end
 
 :lost_lives
 cmd message tutorial_face concerned
-cmd message tutorial You lost a life! {GlobalStateManager.runtime_state["player"]["lives"]} remaining...
+cmd message tutorial You lost a life! {GlobalStateManager.get_runtime("player_lives")} remaining...
 signal on_lost_life
 cmd message tutorial_player [Press any key to continue]
 wait_input any -> end
@@ -349,10 +379,9 @@ wait_time 2.0
 - If the condition is **false**, continue to the next line
 
 *Variable substitution:*
-- Syntax: `{GlobalStateManager.<state_type>["key"]["nested"]}`
-- Supports arbitrary nesting levels
+- Syntax: `{GlobalStateManager.get_runtime("key")}` or `{GlobalStateManager.get_persistent("key")}`
 - Values are substituted into command text before execution
-- Missing keys remain unchanged
+- Missing keys return `null` and remain unchanged
 
 *Wait input with jump:*
 - Syntax: `wait_input <input_name> -> <marker_name>`

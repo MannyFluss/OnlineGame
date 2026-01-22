@@ -1,7 +1,7 @@
 extends Application
 
 
-const TIMELINE_PATH := "res://Core/Applications/Apps/TutorialApp/test_state_functions.txt"
+const TIMELINE_PATH := "res://Core/Applications/Apps/TutorialApp/tutorial.txt"
 
 const FRONTEND_SCENE := preload("res://Core/Applications/Apps/TutorialApp/TutorialFrontend.tscn")
 
@@ -9,10 +9,14 @@ var _interpreter: DSLInterpreter
 var _frontend: Control
 
 
+
+
 func start(_command: String, _stripped_commands: Array[String]) -> void:
-	GlobalStateManager.runtime_state["tutorial"] = {}
-	GlobalStateManager.runtime_state["tutorial"]["current_choice"] = 1
-	GlobalStateManager.runtime_state["tutorial"]["current_choice_active"] = false
+	GlobalStateManager.runtime_changed.connect(on_runtime_var_changed)
+	
+	GlobalStateManager.set_runtime("tutorial_choice",1)
+	GlobalStateManager.set_runtime("tutorial_choice_active",false)
+	
 	
 	
 	
@@ -40,11 +44,26 @@ func start(_command: String, _stripped_commands: Array[String]) -> void:
 func _input(event: InputEvent) -> void:
 	if not active:
 		return
-
+	if event.is_action_pressed("ui_left"):
+		GlobalStateManager.set_runtime("tutorial_choice",GlobalStateManager.get_runtime("tutorial_choice")-1)
+	if event.is_action_pressed("ui_right"):
+		GlobalStateManager.set_runtime("tutorial_choice",GlobalStateManager.get_runtime("tutorial_choice")+1)
+	
+	
 	if event.is_action_pressed("ui_accept"):
 		if _interpreter and _interpreter.is_running():
 			_interpreter.receive_input("space")
 
+func on_runtime_var_changed(path:String, value :Variant)->void:
+	print("Global state manager ", path, ":", value)
+	if path == "tutorial_choice" and GlobalStateManager.get_runtime("tutorial_choice_active"):
+		var current_choice = GlobalStateManager.get_runtime("tutorial_choice")
+		match current_choice:
+			1: CommandInterface.execute_text_command("message tutorial_player *option1 option2 option3")
+			2: CommandInterface.execute_text_command("message tutorial_player option1 *option2 option3")
+			3: CommandInterface.execute_text_command("message tutorial_player option1 option2 *option3")
+			
+	
 
 func exit() -> void:
 	print("[TutorialApp] Exiting...")
