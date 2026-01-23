@@ -67,7 +67,7 @@ wait_input space
 <cmd message tutorial 1: how do you look at the items in your current directory?
 Option1: observe
 Option2: look   
-Option3: ls     
+Option3: ls
 >
 wait_input space
 
@@ -90,6 +90,11 @@ set_runtime tutorial_choice 2
 
 wait_input space
 
-cmd message tutorial you chose option {GlobalStateManager.get_runtime("tutorial_choice")}
+cmd message tutorial you chose option {$tutorial_choice}
+set_runtime tutorial_choice_active false
+
+wait_input space
+
+if {$tutorial_choice} == 3 -> cmd message tutorial hurray yayayayayaya
 
 wait_input space
