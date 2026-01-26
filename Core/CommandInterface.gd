@@ -59,6 +59,8 @@ func execute_command(command: Command) -> void:
 			pass
 		"message":
 			_handle_message_command(command)
+		"clear":
+			GlobalOutput.clear_output()
 		#make this automatic later cccc
 		"basic":
 			_handle_application_start(ApplicationLoader.instance.load_app("Basic"),[""])
@@ -90,13 +92,13 @@ func _handle_ls_command() -> void:
 	if files.is_empty():
 		GlobalOutput.send_to_output("(empty directory)")
 		return
-
+	#"[color=cyan]Hello[/color] [color=magenta]World[/color]"
 	var output: String = ""
 	for file_info: Dictionary in files:
 		if file_info["type"] == "folder":
-			output += "[FOLDER] " + file_info["name"] + "\n"
+			output += "[color=#EEEEEE]" + file_info["name"] + "[/color]\n"
 		else:
-			output += "[FILE] " + file_info["name"] + "\n"
+			output += "[color=#DDAED3]" + file_info["name"] + "[/color]\n"
 
 	GlobalOutput.send_to_output(output.strip_edges())
 
@@ -160,16 +162,16 @@ func _handle_play_command(command: Command) -> void:
 
 func _handle_sfx_command(command: Command) -> void:
 	if command.subcommand.size() < 2:
-		GlobalOutput.send_to_output("Usage: sfx [filename]")
+		#GlobalOutput.send_to_output("Usage: sfx [filename]","debug")
 		return
 
 	var sfx_name: String = command.subcommand[1]
 	SFX.play_sfx(sfx_name)
-	GlobalOutput.send_to_output("Playing SFX: " + sfx_name)
+	#GlobalOutput.send_to_output("Playing SFX: " + sfx_name)
 
 func _handle_music_command(command: Command) -> void:
 	if command.subcommand.size() < 2:
-		GlobalOutput.send_to_output("Usage: music [filename|stop|random]")
+		#GlobalOutput.send_to_output("Usage: music [filename|stop|random]")
 		return
 
 	var arg: String = command.subcommand[1]

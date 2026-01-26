@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://ukdcejybx1ow"
-path="res://.godot/imported/brush.wav-0548b1e266f9f8bf02d47bbfd38ee6f2.sample"
+path="res://.godot/imported/click2.wav-b4f09fb8ee19b5b8567bffe4dc3f33fc.sample"
 
 [deps]
 
-source_file="res://Working/SFX/External/Shapeforms Audio Free Sound Effects/Type Preview/Laptop/brush.wav"
-dest_files=["res://.godot/imported/brush.wav-0548b1e266f9f8bf02d47bbfd38ee6f2.sample"]
+source_file="res://Working/SFX/External/Shapeforms Audio Free Sound Effects/Type Preview/Laptop/click2.wav"
+dest_files=["res://.godot/imported/click2.wav-b4f09fb8ee19b5b8567bffe4dc3f33fc.sample"]
 
 [params]
 
