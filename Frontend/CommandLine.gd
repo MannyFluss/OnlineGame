@@ -21,15 +21,17 @@ func _apply_word_colors(_text: String) -> String:
 	# Start with white as default color
 	var result = "[color=#EEEEEE]" + _text + "[/color]"
 
-	# Commands - blue color (#6594B1)
+	# Commands - blue color (#6594B1) + bold
 	var blue_words = ["observe", "explore", "read", "play", "message", "clear"]
 	for word in blue_words:
 		result = TextManipulation.apply_tag_to_word(result, word, "color=#6594B1")
+		result = TextManipulation.apply_tag_to_word(result, word, "tornado")
 
-	# App names - mauve/red color (#DDAED3)
+	# App names - mauve/red color (#DDAED3) + wave
 	var red_words = ["basic1", "basic2", "tutorial"]
 	for word in red_words:
 		result = TextManipulation.apply_tag_to_word(result, word, "color=#DDAED3")
+		result = TextManipulation.apply_tag_to_word(result, word, "wave")
 
 	return result
 	
