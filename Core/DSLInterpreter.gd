@@ -240,13 +240,14 @@ func _parse_wait_input(rest: String) -> Dictionary:
 
 func _parse_if(rest: String) -> Dictionary:
 	# Format: GlobalStateManager.path operator value -> marker_name
+	# Or:     GlobalStateManager.path operator value -> inline_command args
 	var parts = rest.split("->", false)
 	if parts.size() != 2:
-		push_warning("DSLInterpreter: Invalid if syntax, expected '-> marker': %s" % rest)
+		push_warning("DSLInterpreter: Invalid if syntax, expected '-> marker' or '-> command': %s" % rest)
 		return {}
 
 	var condition_str = parts[0].strip_edges()
-	var marker = parts[1].strip_edges()
+	var action_str = parts[1].strip_edges()
 
 	# Parse the condition: path operator value
 	# Operators: ==, !=, >=, <=, >, <
@@ -268,13 +269,27 @@ func _parse_if(rest: String) -> Dictionary:
 	var path = condition_str.substr(0, operator_pos).strip_edges()
 	var value_str = condition_str.substr(operator_pos + operator.length()).strip_edges()
 
-	return {
-		"type": "if",
-		"path": path,
-		"operator": operator,
-		"value": _parse_value(value_str),
-		"marker": marker
-	}
+	# Try to parse the action as an inline instruction
+	var inline_instruction = _parse_instruction(action_str)
+
+	# If it parsed as a valid instruction, use it as inline action
+	# Otherwise, treat it as a marker name
+	if not inline_instruction.is_empty():
+		return {
+			"type": "if",
+			"path": path,
+			"operator": operator,
+			"value": _parse_value(value_str),
+			"inline_action": inline_instruction
+		}
+	else:
+		return {
+			"type": "if",
+			"path": path,
+			"operator": operator,
+			"value": _parse_value(value_str),
+			"marker": action_str
+		}
 
 
 func _evaluate_condition(instruction: Dictionary) -> bool:
@@ -322,7 +337,17 @@ func _parse_value(value_str: String):
 
 
 func _get_state_value_from_path(path: String) -> Variant:
-	# Parse paths like: GlobalStateManager.runtime_state["key"]["nested"]
+	# Shorthand: {$var_name} for runtime
+	if path.begins_with("{$") and path.ends_with("}"):
+		var key = path.substr(2, path.length() - 3)
+		return GlobalStateManager.get_runtime(key)
+
+	# Shorthand: {%var_name} for persistent
+	if path.begins_with("{%") and path.ends_with("}"):
+		var key = path.substr(2, path.length() - 3)
+		return GlobalStateManager.get_persistent(key)
+
+	# Full path: GlobalStateManager.runtime_state["key"]["nested"]
 	# or: GlobalStateManager.persistent_data["key"]["nested"]
 
 	if not path.begins_with("GlobalStateManager."):
@@ -396,6 +421,28 @@ func _substitute_variables(text: String) -> String:
 	persistent_pattern.compile("\\{GlobalStateManager\\.get_persistent\\(\"([^\"]+)\"\\)\\}")
 	var persistent_matches = persistent_pattern.search_all(text)
 	for match in persistent_matches:
+		var full_pattern = match.get_string(0)
+		var key = match.get_string(1)
+		var value = GlobalStateManager.get_persistent(key)
+		if value != null:
+			result = result.replace(full_pattern, str(value))
+
+	# Pattern 3: {$key} - shorthand for runtime
+	var short_runtime = RegEx.new()
+	short_runtime.compile("\\{\\$([^}]+)\\}")
+	var sr_matches = short_runtime.search_all(result)
+	for match in sr_matches:
+		var full_pattern = match.get_string(0)
+		var key = match.get_string(1)
+		var value = GlobalStateManager.get_runtime(key)
+		if value != null:
+			result = result.replace(full_pattern, str(value))
+
+	# Pattern 4: {%key} - shorthand for persistent
+	var short_persistent = RegEx.new()
+	short_persistent.compile("\\{%([^}]+)\\}")
+	var sp_matches = short_persistent.search_all(result)
+	for match in sp_matches:
 		var full_pattern = match.get_string(0)
 		var key = match.get_string(1)
 		var value = GlobalStateManager.get_persistent(key)
@@ -484,10 +531,15 @@ func _execute_instruction(instruction: Dictionary) -> bool:
 
 		"if":
 			if _evaluate_condition(instruction):
-				if _markers.has(instruction.marker):
-					_program_counter = _markers[instruction.marker]
-				else:
-					push_error("DSLInterpreter: Unknown marker: %s" % instruction.marker)
+				# Check if this is an inline action or a marker jump
+				if instruction.has("inline_action"):
+					# Execute the inline instruction directly
+					return _execute_instruction(instruction.inline_action)
+				elif instruction.has("marker"):
+					if _markers.has(instruction.marker):
+						_program_counter = _markers[instruction.marker]
+					else:
+						push_error("DSLInterpreter: Unknown marker: %s" % instruction.marker)
 			return true
 
 		"signal":
