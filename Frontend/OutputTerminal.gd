@@ -44,8 +44,7 @@ func _on_text_outputted(command: String, _channel: String) -> void:
 	if _channel != "":
 		return
 
-	var colored_command = TerminalColors.apply_color(command, "primary")
-	_real_text = _real_text + "\n" + colored_command
+	_real_text = _real_text + "\n" + command
 	_target_display_length = TextManipulation.count_visible_chars(_real_text)
 	_next_update_delay = randf_range(typing_chaos_min, typing_chaos_max)
 
