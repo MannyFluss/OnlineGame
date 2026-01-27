@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://8gonw30c0yjk"]
+[gd_scene load_steps=12 format=3 uid="uid://8gonw30c0yjk"]
 
 [ext_resource type="Theme" uid="uid://h82wjhy4vg5i" path="res://Assets/SpaceWormTheme/space-worm-theme/EditedTheme/MannyWorm2.tres" id="1_6gcm1"]
 [ext_resource type="Script" uid="uid://qkg812nx3ju2" path="res://Frontend/Terminal.gd" id="2_g11hk"]
@@ -8,6 +8,23 @@
 [ext_resource type="Script" uid="uid://l86o0qom0ftv" path="res://Core/Applications/Apps/BasicVisualApp.gd" id="5_migre"]
 [ext_resource type="Script" uid="uid://drl0p6krgt7i3" path="res://Core/Applications/Apps/BasicVisualApp2/BasicVisualApp2.gd" id="7_h6cu1"]
 [ext_resource type="Script" uid="uid://bow4ae3aupthr" path="res://Core/Applications/Apps/TutorialApp/TutorialApp.gd" id="8_6gcm1"]
+[ext_resource type="Shader" uid="uid://dwpb8xsg1rwck" path="res://Shaders/WireFrame.gdshader" id="9_fl208"]
+[ext_resource type="Script" uid="uid://dvfc3vs8nt71x" path="res://Frontend/ProgramStartupFrontend.gd" id="10_tgbum"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tgbum"]
+render_priority = 0
+shader = ExtResource("9_fl208")
+shader_parameter/wireframe_color = Color(0, 0.8, 1, 1)
+shader_parameter/shake_power = 0.02
+shader_parameter/shake_rate = 0.5
+shader_parameter/shake_speed = 5.0
+shader_parameter/shake_block_size = 25.0
+shader_parameter/spin_enabled = false
+shader_parameter/spin_speed = 1.0
+shader_parameter/spin_axis = 1
+shader_parameter/wobble_enabled = false
+shader_parameter/wobble_amount = 0.03
+shader_parameter/wobble_speed = 2.0
 
 [node name="MainTerminalControl" type="Control"]
 layout_mode = 3
@@ -53,7 +70,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 bbcode_enabled = true
-text = "this is some text for a thing"
+text = "[center]-----------------------------------------------------------------------------------------------[/center]"
 fit_content = true
 
 [node name="Divider2" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
@@ -69,6 +86,14 @@ custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
+text = "[color=#EEEEEE][center][wave][font size=164] 
+Hello and welcome to MannyOS
+[font size=92]
+
+[color=6594B1]
+dont know where to start?
+
+enter the [color=#DDAED3]tutorial[/color] command to learn how to interact with MannyOS"
 scroll_active = false
 scroll_following = true
 script = ExtResource("3_y1h60")
@@ -96,8 +121,8 @@ script = ExtResource("2_tmlho")
 layout_mode = 0
 offset_left = 2649.0
 offset_top = -1293.0
-offset_right = 6794.0
-offset_bottom = -933.0
+offset_right = 7045.0
+offset_bottom = -529.0
 theme_override_font_sizes/normal_font_size = 78
 text = "notes:
 resolution is: 95x20:
@@ -115,3 +140,20 @@ script = ExtResource("7_h6cu1")
 
 [node name="Tutorial" type="Node" parent="ApplicationLoader"]
 script = ExtResource("8_6gcm1")
+
+[node name="Panel2" type="Panel" parent="."]
+z_index = -10
+material = SubResource("ShaderMaterial_tgbum")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6813.0
+offset_top = 232.0
+offset_right = 6813.0
+offset_bottom = 232.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProgramStartupFrontend" type="Node" parent="."]
+script = ExtResource("10_tgbum")

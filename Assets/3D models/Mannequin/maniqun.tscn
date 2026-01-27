@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://jatv3rx8wbwn"]
+
+[ext_resource type="PackedScene" uid="uid://boayoswk8o1fd" path="res://Assets/3D models/Mannequin/maniqun.fbx" id="1_e7pqe"]
+
+[node name="maniqun" instance=ExtResource("1_e7pqe")]

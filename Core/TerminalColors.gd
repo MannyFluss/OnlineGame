@@ -7,10 +7,14 @@ class_name TerminalColors
 # Accents: medium blue and soft mauve
 # Borders: decorative pink
 
-const PRIMARY_TEXT = Color("#213C51")      # Dark navy - main text
-const SECONDARY_TEXT = Color("#6594B1")    # Medium blue - emphasis/prompts
-const ACCENT = Color("#DDAED3")            # Soft mauve - decorative/highlights
-const PAPER_BG = Color("#EEEEEE")          # Off-white - background
+# [color=213C51]
+# [color=6594B1]
+# [color=DDAED3]
+# [color=EEEEEE]
+const PRIMARY_TEXT = Color("#213C51")      # Dark navy - main text               # [color=213C51]
+const SECONDARY_TEXT = Color("#6594B1")    # Medium blue - emphasis/prompts      # [color=6594B1]
+const ACCENT = Color("#DDAED3")            # Soft mauve - decorative/highlights  # [color=DDAED3]
+const PAPER_BG = Color("#EEEEEE")          # Off-white - background              # [color=EEEEEE]
 
 # Semantic color mapping
 const COLOR_INPUT = PRIMARY_TEXT           # User input text

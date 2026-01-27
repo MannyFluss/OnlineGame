@@ -61,6 +61,8 @@ func execute_command(command: Command) -> void:
 			_handle_message_command(command)
 		"clear":
 			GlobalOutput.clear_output()
+		"exit":
+			_handle_exit_command()
 		#make this automatic later cccc
 		"basic":
 			_handle_application_start(ApplicationLoader.instance.load_app("Basic"),[""])
@@ -178,13 +180,13 @@ func _handle_music_command(command: Command) -> void:
 
 	if arg == "stop":
 		Music.stop()
-		GlobalOutput.send_to_output("Music stopped")
+		GlobalOutput.send_to_output("Music stopped","d")
 	elif arg == "random":
 		Music.play_random()
-		GlobalOutput.send_to_output("Playing random song")
+		GlobalOutput.send_to_output("Playing random song","d")
 	else:
 		Music.play_song(arg)
-		GlobalOutput.send_to_output("Playing music: " + arg)
+		GlobalOutput.send_to_output("Playing music: " + arg,"d")
 
 func _handle_application_start(app:Application,_stripped_commands: Array[String])->void:
 	if state==States.APPLICATION:
@@ -201,4 +203,18 @@ func _handle_application_shutdown(app:Application)->void:
 	app.exit()
 	state = States.TERMINAL
 	GlobalInput.enabled=true
+
+
+func _handle_exit_command() -> void:
+	# Freeze the screen for a second by disabling input
+	GlobalInput.enabled = false
+	GlobalOutput.send_to_output("[color=DDAED3][wave][i][center]
 	
+	Bye Bye . . .", "exit_program")
+	
+
+	# Wait 1 second before quitting
+	await get_tree().create_timer(2.5).timeout
+
+	# Exit the application
+	get_tree().quit()

@@ -51,12 +51,29 @@ static func build_display_with_n_chars(target_text: String, n: int) -> String:
 
 
 static func extract_tag_name(opening_tag: String) -> String:
-	var content = opening_tag.substr(1, opening_tag.length() - 2)
+	var content = opening_tag
+
+	# Remove brackets if present
+	if content.begins_with('[') and content.ends_with(']'):
+		content = content.substr(1, content.length() - 2)
+
+	# Find equals sign to separate tag name from arguments
 	var equals_pos = content.find('=')
 	if equals_pos != -1:
-		return content.substr(0, equals_pos)
-	return content
+		# Extract tag name and trim trailing spaces
+		return content.substr(0, equals_pos).strip_edges()
 
+	# No arguments, just trim and return
+	return content.strip_edges()
+
+static func apply_tag_to_string(text: String, tag: String) -> String:
+	if text.is_empty() or tag.is_empty():
+		return text
+
+	var closing_tag = "[/%s]" % _extract_tag_name("[%s]" % tag)
+	var opening_tag = "[%s]" % tag
+
+	return opening_tag + text + closing_tag
 
 static func apply_tag_to_word(text: String, word: String, tag: String) -> String:
 	if word.is_empty() or tag.is_empty():
@@ -84,8 +101,17 @@ static func apply_tag_to_word(text: String, word: String, tag: String) -> String
 
 
 static func _extract_tag_name(opening_tag: String) -> String:
-	var content = opening_tag.substr(1, opening_tag.length() - 2)
+	var content = opening_tag
+
+	# Remove brackets if present
+	if content.begins_with('[') and content.ends_with(']'):
+		content = content.substr(1, content.length() - 2)
+
+	# Find equals sign to separate tag name from arguments
 	var equals_pos = content.find('=')
 	if equals_pos != -1:
-		return content.substr(0, equals_pos)
-	return content
+		# Extract tag name and trim trailing spaces
+		return content.substr(0, equals_pos).strip_edges()
+
+	# No arguments, just trim and return
+	return content.strip_edges()

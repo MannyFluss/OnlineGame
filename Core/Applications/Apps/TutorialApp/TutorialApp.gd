@@ -9,10 +9,10 @@ var _interpreter: DSLInterpreter
 var _frontend: Control
 
 
-
+func _ready() -> void:
+	GlobalStateManager.runtime_changed.connect(on_runtime_var_changed)
 
 func start(_command: String, _stripped_commands: Array[String]) -> void:
-	GlobalStateManager.runtime_changed.connect(on_runtime_var_changed)
 	
 	GlobalStateManager.set_runtime("tutorial_choice",1)
 	GlobalStateManager.set_runtime("tutorial_choice_active",false)

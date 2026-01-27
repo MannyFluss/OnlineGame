@@ -1,0 +1,158 @@
+[gd_scene load_steps=4 format=3 uid="uid://dyka6auivcwka"]
+
+[ext_resource type="PackedScene" uid="uid://wkmf731fdb00" path="res://Assets/3D models/Mannequin/WOODMan.fbx" id="1_58qj8"]
+[ext_resource type="Shader" uid="uid://dwpb8xsg1rwck" path="res://Shaders/WireFrame.gdshader" id="2_go0e2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lf0rn"]
+render_priority = 0
+shader = ExtResource("2_go0e2")
+shader_parameter/wireframe_color = Color(0, 0.8, 1, 1)
+shader_parameter/shake_power = 0.02
+shader_parameter/shake_rate = 0.5
+shader_parameter/shake_speed = 5.0
+shader_parameter/shake_block_size = 25.0
+shader_parameter/spin_enabled = false
+shader_parameter/spin_speed = 1.0
+shader_parameter/spin_axis = 1
+shader_parameter/wobble_enabled = true
+shader_parameter/wobble_amount = 0.03
+shader_parameter/wobble_speed = 2.0
+
+[node name="Startup" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(4096, 2160)
+render_target_update_mode = 4
+
+[node name="Node3D" type="Node3D" parent="SubViewportContainer/SubViewport"]
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/Node3D"]
+projection = 1
+size = 2.389
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport/Node3D"]
+transform = Transform3D(0.010639171, 0.47562426, -0.8795843, -0.0057525774, 0.87964857, 0.4755894, 0.9999269, 0, 0.012094798, 0, 0, 0)
+
+[node name="WOODMan" parent="." instance=ExtResource("1_58qj8")]
+transform = Transform3D(1.9106855e-15, 4.371139e-08, -1, 1, -4.371139e-08, 0, -4.371139e-08, -1, -4.371139e-08, -1, 0, -4)
+
+[node name="CHEST" parent="WOODMan" index="0"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="HAND" parent="WOODMan" index="1"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="ABDO" parent="WOODMan" index="2"]
+visible = false
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="BASIN" parent="WOODMan" index="3"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="LEG" parent="WOODMan" index="4"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="NEQUE" parent="WOODMan" index="5"]
+visible = false
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="HEAD" parent="WOODMan" index="6"]
+visible = false
+
+[node name="WOODMan2" parent="." instance=ExtResource("1_58qj8")]
+transform = Transform3D(-8.742278e-08, -4.3711385e-08, 1, -1, 4.3711392e-08, -8.742278e-08, -4.371139e-08, -1, -4.371139e-08, -1, -1.1920929e-07, -4)
+
+[node name="CHEST" parent="WOODMan2" index="0"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="HAND" parent="WOODMan2" index="1"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="ABDO" parent="WOODMan2" index="2"]
+visible = false
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="BASIN" parent="WOODMan2" index="3"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="LEG" parent="WOODMan2" index="4"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="NEQUE" parent="WOODMan2" index="5"]
+visible = false
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="HEAD" parent="WOODMan2" index="6"]
+visible = false
+
+[node name="WOODMan3" parent="." instance=ExtResource("1_58qj8")]
+transform = Transform3D(1.9106855e-15, 4.371139e-08, -1, 1, -4.371139e-08, 0, -4.371139e-08, -1, -4.371139e-08, 1, 0, -4)
+
+[node name="CHEST" parent="WOODMan3" index="0"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="HAND" parent="WOODMan3" index="1"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="ABDO" parent="WOODMan3" index="2"]
+visible = false
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="BASIN" parent="WOODMan3" index="3"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="LEG" parent="WOODMan3" index="4"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="NEQUE" parent="WOODMan3" index="5"]
+visible = false
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="HEAD" parent="WOODMan3" index="6"]
+visible = false
+
+[node name="WOODMan4" parent="." instance=ExtResource("1_58qj8")]
+transform = Transform3D(-8.742278e-08, -4.371138e-08, 1, -1, 7.54979e-08, -8.742278e-08, -7.5497894e-08, -1, -4.371139e-08, 1, 0, -4)
+
+[node name="CHEST" parent="WOODMan4" index="0"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="HAND" parent="WOODMan4" index="1"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="ABDO" parent="WOODMan4" index="2"]
+visible = false
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="BASIN" parent="WOODMan4" index="3"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="LEG" parent="WOODMan4" index="4"]
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="NEQUE" parent="WOODMan4" index="5"]
+visible = false
+surface_material_override/0 = SubResource("ShaderMaterial_lf0rn")
+
+[node name="HEAD" parent="WOODMan4" index="6"]
+visible = false
+
+[editable path="WOODMan"]
+[editable path="WOODMan2"]
+[editable path="WOODMan3"]
+[editable path="WOODMan4"]

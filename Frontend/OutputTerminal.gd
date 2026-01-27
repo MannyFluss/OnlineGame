@@ -41,7 +41,10 @@ func _process(delta: float) -> void:
 func _on_text_outputted(command: String, _channel: String) -> void:
 	if _channel == "c":
 		print(command)
-	if _channel != "":
+	elif _channel == "exit_program":
+		var tween : Tween = get_tree().create_tween() as Tween
+		tween.tween_property(self,"self_modulate",Color(1,1,1,0),2.5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_QUAD)
+	elif _channel != "":
 		return
 
 	_real_text = _real_text + "\n" + command

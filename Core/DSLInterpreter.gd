@@ -5,7 +5,6 @@ signal terminal_command(command_text: String)
 signal timeline_started()
 signal timeline_ended()
 signal waiting_for_input(input_name: String)
-signal DSL_file_signal(signal_name:String)
 
 enum State { IDLE, RUNNING, WAITING_INPUT, WAITING_TIME }
 
@@ -74,16 +73,16 @@ func _tokenize(content: String) -> Array:
 
 		# Marker - read until end of line or whitespace
 		if content[i] == ':':
-			var start = i
+			var marker_start = i
 			i += 1
 			while i < length and content[i] not in [' ', '\t', '\n', '\r']:
 				i += 1
-			tokens.append(content.substr(start, i - start))
+			tokens.append(content.substr(marker_start, i - marker_start))
 			continue
 
 		# Bracket-delimited instruction: <...>
 		if content[i] == '<':
-			var start = i + 1
+			var bracket_start = i + 1
 			var depth = 1
 			i += 1
 			while i < length and depth > 0:
@@ -92,19 +91,19 @@ func _tokenize(content: String) -> Array:
 				elif content[i] == '>':
 					depth -= 1
 				i += 1
-			var inner = content.substr(start, i - start - 1)
+			var inner = content.substr(bracket_start, i - bracket_start - 1)
 			tokens.append(inner.strip_edges())
 			continue
 
 		# Non-bracketed instruction - read until we hit < or newline
-		var start = i
+		var instruction_start = i
 		while i < length:
 			if content[i] == '\n':
 				i += 1
 				break
 			if content[i] == '<':
 				# Command followed by <content>
-				var cmd_part = content.substr(start, i - start)
+				var cmd_part = content.substr(instruction_start, i - instruction_start)
 				i += 1  # skip <
 				var content_start = i
 				var depth = 1
@@ -117,12 +116,12 @@ func _tokenize(content: String) -> Array:
 				var bracket_content = content.substr(content_start, i - content_start - 1)
 				# Combine: "cmd message tutorial" + content
 				tokens.append(cmd_part.strip_edges() + "\n" + bracket_content)
-				start = -1
+				instruction_start = -1
 				break
 			i += 1
 
-		if start != -1 and i > start:
-			var line = content.substr(start, i - start).strip_edges()
+		if instruction_start != -1 and i > instruction_start:
+			var line = content.substr(instruction_start, i - instruction_start).strip_edges()
 			if not line.is_empty():
 				tokens.append(line)
 
@@ -155,32 +154,23 @@ func _parse_instruction(token: String) -> Dictionary:
 	match command:
 		"wait_input":
 			return _parse_wait_input(rest)
-
 		"wait_time":
 			return {"type": "wait_time", "duration": float(rest.strip_edges())}
-
 		"jump":
 			return {"type": "jump", "marker": rest.strip_edges()}
-
 		"cmd":
 			return {"type": "cmd", "text": rest}
-
 		"signal":
 			return _parse_signal(rest)
-
 		"if":
 			return _parse_if(rest)
-
 		"set_runtime":
 			return _parse_set_runtime(rest)
-
 		"set_persistent":
 			return _parse_set_persistent(rest)
-
 		_:
 			push_warning("DSLInterpreter: Unknown command: %s" % command)
 			return {}
-
 
 func _parse_signal(rest: String) -> Dictionary:
 	var function_name = rest.strip_edges()
