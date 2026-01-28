@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://l86o0qom0ftv" path="res://Core/Applications/Apps/BasicVisualApp.gd" id="5_migre"]
 [ext_resource type="Script" uid="uid://drl0p6krgt7i3" path="res://Core/Applications/Apps/BasicVisualApp2/BasicVisualApp2.gd" id="7_h6cu1"]
 [ext_resource type="Script" uid="uid://bow4ae3aupthr" path="res://Core/Applications/Apps/TutorialApp/TutorialApp.gd" id="8_6gcm1"]
-[ext_resource type="Shader" uid="uid://dwpb8xsg1rwck" path="res://Shaders/WireFrame.gdshader" id="9_fl208"]
+[ext_resource type="Shader" uid="uid://dwpb8xsg1rwck" path="res://Assets/Shaders/WireFrame.gdshader" id="9_fl208"]
 [ext_resource type="Script" uid="uid://dvfc3vs8nt71x" path="res://Frontend/ProgramStartupFrontend.gd" id="10_tgbum"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tgbum"]

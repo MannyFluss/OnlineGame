@@ -34,6 +34,7 @@ window/stretch/mode="canvas_items"
 [file_customization]
 
 folder_colors={
+"res://AssetLib/": "teal",
 "res://Assets/": "orange",
 "res://Core/": "purple",
 "res://Core/Applications/": "green",
